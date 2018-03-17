@@ -1,0 +1,16 @@
+[package]
+name = "gag_combo_gen"
+version = "0.1.0"
+authors = ["Jon Doe <agustusfifth@gmail.com>"]
+
+[dependencies]
+fnv = "*"
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+panic = "abort"
