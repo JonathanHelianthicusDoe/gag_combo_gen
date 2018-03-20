@@ -7,23 +7,19 @@ mod opt;
 
 extern crate fnv;
 
-use fnv::FnvHashMap as Map;
 use gag_types::Gag;
-use gag_types::GagType::SquirtGag;
-use gags::{PASS, SQUIRT_GAGS};
+use gag_types::GagType::{DropGag, SquirtGag};
+use gags::{DROP_GAGS, PASS, SQUIRT_GAGS};
 use opt::opt_combo;
 
 
 fn main() {
-    let mut some_gags: Map<Gag, u8> = Map::default();
-
-    some_gags.insert(PASS, 0);
+    let mut some_gags = Vec::with_capacity(5 * 7 * 2);
+    some_gags.place_back() <- PASS;
     SQUIRT_GAGS.into_iter()
-               .enumerate()
-               .map(|(i, gag)| ((2 * i + 1) as u8, gag))
-               .for_each(|(i, gag)| {
-                   some_gags.insert(gag.clone(), i);
-                   some_gags.insert(Gag::get_org(gag.clone()), i + 1);
+               .for_each(|gag| {
+                   some_gags.place_back() <- gag.clone();
+                   some_gags.place_back() <- Gag::get_org(gag.clone());
                });
 
     assert_eq!(
@@ -65,6 +61,26 @@ fn main() {
             Gag { name: "storm_cloud", gag_type: SquirtGag, is_org: false, base_dmg: 80 },
             Gag { name: "storm_cloud", gag_type: SquirtGag, is_org: false, base_dmg: 80 },
             Gag { name: "storm_cloud", gag_type: SquirtGag, is_org: false, base_dmg: 80 },
+        ])
+    );
+
+    let mut some_gags = Vec::with_capacity(5 * 7 * 2);
+    some_gags.place_back() <- PASS;
+    DROP_GAGS.into_iter()
+             .zip(SQUIRT_GAGS.into_iter())
+             .for_each(|(drop, squirt)| {
+                 some_gags.place_back() <- drop.clone();
+                 some_gags.place_back() <- Gag::get_org(drop.clone());
+                 some_gags.place_back() <- squirt.clone();
+                 some_gags.place_back() <- Gag::get_org(squirt.clone());
+             });
+
+    assert_eq!(
+        opt_combo(&some_gags, 12, false, true, 3, 3),
+        Some(vec![
+            Gag { name: "anvil",       gag_type: DropGag, is_org: false, base_dmg: 30  },
+            Gag { name: "grand_piano", gag_type: DropGag, is_org: false, base_dmg: 170 },
+            Gag { name: "grand_piano", gag_type: DropGag, is_org: false, base_dmg: 170 },
         ])
     );
 

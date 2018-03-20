@@ -133,7 +133,7 @@ fn use_gag(hp: &mut Hp, is_lured: bool, used: &mut GagHistory, gag: &Gag) {
 
 fn opt(// Constant
        cache:     &mut Map<(u8, Hp, u8, GagHistory), Option<(u8, Gag)>>,
-       gags:      &Map<Gag, u8>,
+       gags:      &Vec<Gag>,
        is_lured:  bool,
        // Non-constant
        n:         u8,
@@ -159,7 +159,8 @@ fn opt(// Constant
     let mut min_max_rank = std::u8::MAX;
     let mut min_max_gag = None;
     let mut min_max_gag_rank = std::u8::MAX;
-    for (gag, gag_rank) in gags {
+    for (gag_rank, gag) in gags.iter().enumerate() {
+        let gag_rank = gag_rank as u8;
         if orgs == 0 && gag.is_org {
             continue;
         }
@@ -178,15 +179,15 @@ fn opt(// Constant
                                            child_orgs,
                                            child_used)
         {
-            let new_min_max_rank = child_rank.max(*gag_rank);
+            let new_min_max_rank = child_rank.max(gag_rank);
             if new_min_max_rank < min_max_rank {
                 min_max_rank = new_min_max_rank;
                 min_max_gag = Some(gag);
-                min_max_gag_rank = *gag_rank;
+                min_max_gag_rank = gag_rank;
             } else if new_min_max_rank == min_max_rank {
-                if gag_rank < &min_max_gag_rank {
+                if gag_rank < min_max_gag_rank {
                     min_max_gag = Some(gag);
-                    min_max_gag_rank = *gag_rank;
+                    min_max_gag_rank = gag_rank;
                 }
             }
         }
@@ -206,7 +207,7 @@ fn opt(// Constant
     res
 }
 
-pub fn opt_combo(gags:       &Map<Gag, u8>,
+pub fn opt_combo(gags:       &Vec<Gag>,
                  cog_level:  u8,
                  is_lured:   bool,
                  is_v2:      bool,

@@ -20,3 +20,12 @@ pub const SQUIRT_GAGS: [Gag; 7] = [
     Gag { name: "storm_cloud",      gag_type: GagType::SquirtGag, is_org: false, base_dmg: 80  },
     Gag { name: "geyser",           gag_type: GagType::SquirtGag, is_org: false, base_dmg: 105 },
 ];
+pub const DROP_GAGS: [Gag; 7] = [
+    Gag { name: "flowerpot",   gag_type: GagType::DropGag, is_org: false, base_dmg: 10  },
+    Gag { name: "sandbag",     gag_type: GagType::DropGag, is_org: false, base_dmg: 18  },
+    Gag { name: "anvil",       gag_type: GagType::DropGag, is_org: false, base_dmg: 30  },
+    Gag { name: "big_weight",  gag_type: GagType::DropGag, is_org: false, base_dmg: 45  },
+    Gag { name: "safe",        gag_type: GagType::DropGag, is_org: false, base_dmg: 60  },
+    Gag { name: "grand_piano", gag_type: GagType::DropGag, is_org: false, base_dmg: 170 },
+    Gag { name: "toontanic",   gag_type: GagType::DropGag, is_org: false, base_dmg: 180 },
+];
