@@ -1,4 +1,4 @@
-use gag_types::{Gag, GagType};
+use gag_types::{Gag, GagType, SimpleGag};
 
 
 pub const PASS: Gag = Gag {
@@ -7,10 +7,10 @@ pub const PASS: Gag = Gag {
     is_org:   false,
     base_dmg: 0,
 };
-
-//pub static SOME_GAGS: [Gag; 70] = [
-
-//];
+pub const SIMPLE_PASS: SimpleGag = SimpleGag {
+    gag_type: GagType::PassGag,
+    dmg:      0,
+};
 pub const SQUIRT_GAGS: [Gag; 7] = [
     Gag { name: "squirting_flower", gag_type: GagType::SquirtGag, is_org: false, base_dmg: 4   },
     Gag { name: "glass_of_water",   gag_type: GagType::SquirtGag, is_org: false, base_dmg: 8   },

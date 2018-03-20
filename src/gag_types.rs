@@ -1,32 +1,23 @@
-use std::ops::{Index, IndexMut};
+use gags::SIMPLE_PASS;
+use std::cmp::Ordering;
+use std::mem::swap;
 
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum GagType {
-    PassGag,
-    TrapGag,
-    SoundGag,
-    ThrowGag,
-    SquirtGag,
-    DropGag,
+    TrapGag   = 0,
+    SoundGag  = 1,
+    ThrowGag  = 2,
+    SquirtGag = 3,
+    DropGag   = 4,
+    PassGag   = 5,
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
-pub enum GagUsage {
-    NotUsed,
-    UsedOnce(i16),
-    Used(i16),
-}
-
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
-pub struct GagUsages {
-    pass:   GagUsage,
-    trap:   GagUsage,
-    sound:  GagUsage,
-    throw:  GagUsage,
-    squirt: GagUsage,
-    drop:   GagUsage,
-}
+pub struct GagHistory(pub SimpleGag,
+                      pub SimpleGag,
+                      pub SimpleGag,
+                      pub SimpleGag);
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Gag {
@@ -36,45 +27,79 @@ pub struct Gag {
     pub base_dmg: i16,
 }
 
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+pub struct SimpleGag {
+    pub gag_type: GagType,
+    pub dmg:      i16,
+}
 
-impl GagUsages {
+
+impl PartialOrd for GagType {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.as_u8().cmp(&other.as_u8()))
+    }
+}
+
+impl Ord for GagType {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.as_u8().cmp(&other.as_u8())
+    }
+}
+
+impl GagType {
+    pub fn as_u8(&self) -> u8 {
+        match self {
+            &GagType::TrapGag   => 0,
+            &GagType::SoundGag  => 1,
+            &GagType::ThrowGag  => 2,
+            &GagType::SquirtGag => 3,
+            &GagType::DropGag   => 4,
+            &GagType::PassGag   => 5,
+        }
+    }
+}
+
+impl GagHistory {
     pub fn new() -> Self {
-        GagUsages {
-            pass:   GagUsage::NotUsed,
-            trap:   GagUsage::NotUsed,
-            sound:  GagUsage::NotUsed,
-            throw:  GagUsage::NotUsed,
-            squirt: GagUsage::NotUsed,
-            drop:   GagUsage::NotUsed,
-        }
+        GagHistory(SIMPLE_PASS, SIMPLE_PASS, SIMPLE_PASS, SIMPLE_PASS)
     }
-}
 
-impl Index<GagType> for GagUsages {
-    type Output = GagUsage;
-
-    fn index(&self, t: GagType) -> &GagUsage {
-        match t {
-            GagType::TrapGag   => &self.trap,
-            GagType::SoundGag  => &self.sound,
-            GagType::ThrowGag  => &self.throw,
-            GagType::SquirtGag => &self.squirt,
-            GagType::DropGag   => &self.drop,
-            _                  => &GagUsage::NotUsed,
+    pub fn add_gag(&mut self, gag: &Gag) {
+        let simple = gag.simple();
+        /*
+        if self.0 > simple {
+            swap(&mut self.3, &mut self.2);
+            swap(&mut self.2, &mut self.1);
+            swap(&mut self.1, &mut self.0);
+            self.0 = simple;
+        } else if self.1 > simple {
+            swap(&mut self.3, &mut self.2);
+            swap(&mut self.2, &mut self.1);
+            self.1 = simple;
+        } else if self.2 > simple {
+            swap(&mut self.3, &mut self.2);
+            self.2 = simple;
+        } else {
+            self.3 = simple;
         }
-    }
-}
-
-impl IndexMut<GagType> for GagUsages {
-    fn index_mut(&mut self, t: GagType) -> &mut GagUsage {
-        match t {
-            GagType::TrapGag   => &mut self.trap,
-            GagType::SoundGag  => &mut self.sound,
-            GagType::ThrowGag  => &mut self.throw,
-            GagType::SquirtGag => &mut self.squirt,
-            GagType::DropGag   => &mut self.drop,
-            GagType::PassGag   => &mut self.pass,
+        */
+        // /*
+        if self.0 > simple {
+            self.3 = self.2.clone();
+            self.2 = self.1.clone();
+            self.1 = self.0.clone();
+            self.0 = simple;
+        } else if self.1 > simple {
+            self.3 = self.2.clone();
+            self.2 = self.1.clone();
+            self.1 = simple;
+        } else if self.2 > simple {
+            self.3 = self.2.clone();
+            self.2 = simple;
+        } else {
+            self.3 = simple;
         }
+        // */
     }
 }
 
@@ -94,5 +119,30 @@ impl Gag {
 
     pub fn org_dmg(non_org_dmg: i16) -> i16 {
         non_org_dmg + non_org_dmg / 10
+    }
+
+    pub fn simple(&self) -> SimpleGag {
+        SimpleGag {
+            gag_type: self.gag_type.clone(),
+            dmg:      self.base_dmg,
+        }
+    }
+}
+
+impl PartialOrd for SimpleGag {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        match self.gag_type.cmp(&other.gag_type) {
+            Ordering::Equal => Some(self.dmg.cmp(&other.dmg)),
+            o               => Some(o),
+        }
+    }
+}
+
+impl Ord for SimpleGag {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match self.gag_type.cmp(&other.gag_type) {
+            Ordering::Equal => self.dmg.cmp(&other.dmg),
+            o               => o,
+        }
     }
 }
