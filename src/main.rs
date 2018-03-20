@@ -59,6 +59,14 @@ fn main() {
             Gag { name: "squirting_flower", gag_type: SquirtGag, is_org: false, base_dmg: 4 },
         ])
     );
+    assert_eq!(
+        opt_combo(&some_gags, 11, true, true, 3, 3),
+        Some(vec![
+            Gag { name: "storm_cloud", gag_type: SquirtGag, is_org: false, base_dmg: 80 },
+            Gag { name: "storm_cloud", gag_type: SquirtGag, is_org: false, base_dmg: 80 },
+            Gag { name: "storm_cloud", gag_type: SquirtGag, is_org: false, base_dmg: 80 },
+        ])
+    );
 
     println!("All test cases passed.");
 }

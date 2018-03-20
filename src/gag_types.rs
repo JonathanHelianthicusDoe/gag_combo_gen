@@ -66,7 +66,6 @@ impl GagHistory {
 
     pub fn add_gag(&mut self, gag: &Gag) {
         let simple = gag.simple();
-        /*
         if self.0 > simple {
             swap(&mut self.3, &mut self.2);
             swap(&mut self.2, &mut self.1);
@@ -82,24 +81,6 @@ impl GagHistory {
         } else {
             self.3 = simple;
         }
-        */
-        // /*
-        if self.0 > simple {
-            self.3 = self.2.clone();
-            self.2 = self.1.clone();
-            self.1 = self.0.clone();
-            self.0 = simple;
-        } else if self.1 > simple {
-            self.3 = self.2.clone();
-            self.2 = self.1.clone();
-            self.1 = simple;
-        } else if self.2 > simple {
-            self.3 = self.2.clone();
-            self.2 = simple;
-        } else {
-            self.3 = simple;
-        }
-        // */
     }
 }
 
