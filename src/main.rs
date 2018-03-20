@@ -3,6 +3,7 @@
 
 mod gag_types;
 mod gags;
+mod hp;
 mod opt;
 
 extern crate fnv;
