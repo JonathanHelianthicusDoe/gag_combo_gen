@@ -1,10 +1,10 @@
 #![feature(collection_placement)]
 #![feature(placement_in_syntax)]
 
-mod gag_types;
-mod gags;
+pub mod gag_types;
+pub mod gags;
 mod hp;
-mod opt;
+pub mod opt;
 
 extern crate fnv;
 
@@ -13,8 +13,33 @@ extern crate fnv;
 mod tests {
     use gag_types::Gag;
     use gag_types::GagType::{DropGag, SquirtGag};
-    use gags::{DROP_GAGS, PASS, SQUIRT_GAGS};
+    use gags::{
+        DROP_GAGS, PASS, SOUND_GAGS, SQUIRT_GAGS, THROW_GAGS, TRAP_GAGS,
+    };
     use opt::opt_combo;
+
+    /*
+    #[test]
+    fn test_test() {
+        println!();
+
+        for i in 0..7 {
+            println!("{:?}", DROP_GAGS[i]);
+            println!("{:?}", TRAP_GAGS[i]);
+            println!("{:?}", SOUND_GAGS[i]);
+            println!("{:?}", SQUIRT_GAGS[i]);
+            println!("{:?}", THROW_GAGS[i]);
+
+            println!("{:?}", Gag::get_org(DROP_GAGS[i].clone()));
+            println!("{:?}", Gag::get_org(TRAP_GAGS[i].clone()));
+            println!("{:?}", Gag::get_org(SOUND_GAGS[i].clone()));
+            println!("{:?}", Gag::get_org(SQUIRT_GAGS[i].clone()));
+            println!("{:?}", Gag::get_org(THROW_GAGS[i].clone()));
+        }
+
+        panic!()
+    }
+    */
 
     #[test]
     fn main_test() {

@@ -34,6 +34,16 @@ pub struct SimpleGag {
 }
 
 
+pub const GAG_TYPES: [GagType; 6] = [
+    GagType::TrapGag,
+    GagType::SoundGag,
+    GagType::ThrowGag,
+    GagType::SquirtGag,
+    GagType::DropGag,
+    GagType::PassGag,
+];
+
+
 impl PartialOrd for GagType {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.as_u8().cmp(&other.as_u8()))
