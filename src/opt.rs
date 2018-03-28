@@ -11,14 +11,14 @@ fn use_gag(hp: &mut Hp, is_lured: bool, used: &mut GagHistory, gag: &Gag) {
 }
 
 fn opt(// Constant
-       cache:     &mut Map<(u8, Hp, u8, GagHistory), Option<(u8, Gag)>>,
+       cache:     &mut Map<(u8, Hp, u8, GagHistory), Option<(i32, Gag)>>,
        gags:      &Vec<Gag>,
        is_lured:  bool,
        // Non-constant
        n:         u8,
        hp:        Hp,
        orgs:      u8,
-       used:      GagHistory) -> Option<(u8, Gag)>
+       used:      GagHistory) -> Option<(i32, Gag)>
 {
     // Base cases
     if hp.is_dead() {
@@ -35,11 +35,9 @@ fn opt(// Constant
     }
 
     // Calculate recursively
-    let mut min_max_rank = std::u8::MAX;
-    let mut min_max_gag = None;
-    let mut min_max_gag_rank = std::u8::MAX;
-    for (gag_rank, gag) in gags.iter().enumerate() {
-        let gag_rank = gag_rank as u8;
+    let mut min_cost = std::i32::MAX;
+    let mut min_cost_gag = None;
+    for gag in gags {
         if orgs == 0 && gag.is_org {
             continue;
         }
@@ -50,7 +48,7 @@ fn opt(// Constant
         let mut child_used = used.clone();
         use_gag(&mut child_hp, is_lured, &mut child_used, gag);
 
-        if let Some((child_rank, _)) = opt(cache,
+        if let Some((child_cost, _)) = opt(cache,
                                            gags,
                                            is_lured,
                                            child_n,
@@ -58,25 +56,27 @@ fn opt(// Constant
                                            child_orgs,
                                            child_used)
         {
-            let new_min_max_rank = child_rank.max(gag_rank);
-            if new_min_max_rank < min_max_rank {
-                min_max_rank = new_min_max_rank;
-                min_max_gag = Some(gag);
-                min_max_gag_rank = gag_rank;
-            } else if new_min_max_rank == min_max_rank {
-                if gag_rank < min_max_gag_rank {
-                    min_max_gag = Some(gag);
-                    min_max_gag_rank = gag_rank;
+            let new_min_cost = child_cost + gag.cost;
+            if new_min_cost < min_cost {
+                min_cost = new_min_cost;
+                min_cost_gag = Some(gag);
+            } else if new_min_cost == min_cost {
+                if let Some(mcg) = min_cost_gag {
+                    if gag.cost < mcg.cost {
+                        min_cost_gag = Some(gag);
+                    }
+                } else {
+                    min_cost_gag = Some(gag);
                 }
             }
         }
     }
 
     // Update cache
-    let res = if min_max_rank == std::u8::MAX {
+    let res = if min_cost == std::i32::MAX {
         None
-    } else if let Some(g) = min_max_gag {
-        Some((min_max_rank, g.clone()))
+    } else if let Some(g) = min_cost_gag {
+        Some((min_cost, g.clone()))
     } else {
         None
     };

@@ -47,31 +47,35 @@ impl Hp {
 
         let mut is_lured = is_lured;
         let mut trapped = false;
-        let (mut multi_sound, mut sound_dmg) = (false, 0);
-        let (mut multi_throw, mut throw_dmg) = (false, 0);
+        let (mut multi_sound,  mut sound_dmg)  = (false, 0);
+        let (mut multi_throw,  mut throw_dmg)  = (false, 0);
         let (mut multi_squirt, mut squirt_dmg) = (false, 0);
-        let (mut multi_drop, mut drop_dmg) = (false, 0);
+        let (mut multi_drop,   mut drop_dmg)   = (false, 0);
         let gags = [&used.0, &used.1, &used.2, &used.3, &SIMPLE_PASS];
         for g in gags.into_iter() {
             if g.gag_type != GagType::SoundGag && multi_sound {
                 self.do_dmg((sound_dmg - 1) / 5 + 1);
                 multi_sound = false;
             }
-            if g.gag_type != GagType::ThrowGag && multi_throw {
-                self.do_dmg((throw_dmg - 1) / 5 + 1);
-                if is_lured {
+            if g.gag_type != GagType::ThrowGag {
+                if multi_throw {
+                    self.do_dmg((throw_dmg - 1) / 5 + 1);
+                    multi_throw = false;
+                }
+                if is_lured && throw_dmg != 0 {
                     self.do_dmg((throw_dmg - 1) / 2 + 1);
                     is_lured = false;
                 }
-                multi_throw = false;
             }
-            if g.gag_type != GagType::SquirtGag && multi_squirt {
-                self.do_dmg((squirt_dmg - 1) / 5 + 1);
-                if is_lured {
+            if g.gag_type != GagType::SquirtGag {
+                if multi_squirt {
+                    self.do_dmg((squirt_dmg - 1) / 5 + 1);
+                    multi_squirt = false;
+                }
+                if is_lured && squirt_dmg != 0 {
                     self.do_dmg((squirt_dmg - 1) / 2 + 1);
                     is_lured = false;
                 }
-                multi_squirt = false;
             }
 
             match g.gag_type {

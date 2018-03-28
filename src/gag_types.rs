@@ -25,6 +25,7 @@ pub struct Gag {
     pub gag_type: GagType,
     pub is_org:   bool,
     pub base_dmg: i16,
+    pub cost:     i32,
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
@@ -104,6 +105,7 @@ impl Gag {
                 gag_type: g.gag_type,
                 is_org:   true,
                 base_dmg: Gag::org_dmg(g.base_dmg),
+                cost:     g.cost,
             }
         }
     }
