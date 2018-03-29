@@ -5,6 +5,7 @@ authors = ["Jon Doe <agustusfifth@gmail.com>"]
 
 [dependencies]
 fnv = "*"
+lazy_static = "*"
 
 [profile.release]
 opt-level = 3

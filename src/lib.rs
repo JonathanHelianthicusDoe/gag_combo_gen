@@ -7,6 +7,8 @@ mod hp;
 pub mod opt;
 
 extern crate fnv;
+#[macro_use]
+extern crate lazy_static;
 
 
 #[cfg(test)]

@@ -1,13 +1,112 @@
-use fnv::FnvHashMap as Map;
-use gag_types::{Gag, GagHistory};
-use gags::PASS;
+use fnv::{FnvHashMap as Map, FnvHashSet as Set};
+use gag_types::{Combo, Gag, GagHistory};
+use gags::{hash_picks, PASS};
 use hp::Hp;
 use std;
+use std::collections::BinaryHeap as Heap;
 
 
 fn use_gag(hp: &mut Hp, is_lured: bool, used: &mut GagHistory, gag: &Gag) {
     used.add_gag(gag);
     hp.apply_all_gags(is_lured, used);
+}
+
+fn k_opt(// Constant
+         cache:     &mut Map<(u8, Hp, u8, GagHistory), Vec<Combo>>,
+         gags:      &Vec<Gag>,
+         is_lured:  bool,
+         k:         u8,
+         // Non-constant
+         n:         u8,
+         hp:        Hp,
+         orgs:      u8,
+         used:      GagHistory) -> Vec<Combo>
+{
+    // Base cases
+    if hp.is_dead() {
+        return vec![Combo(0, Vec::new())];
+    }
+    if n == 0 {
+        return Vec::new();
+    }
+
+    // Consult the cache
+    let args = (n, hp.clone(), orgs, used.clone());
+    if let Some(cached) = cache.get(&args) {
+        return cached.clone();
+    }
+
+    // Calculate recursively
+    let mut k_best: Heap<Combo> = Heap::with_capacity(k as usize);
+    let mut pick_hashes_found: Set<u32> = Set::default();
+    for gag in gags {
+        if orgs == 0 && gag.is_org {
+            continue;
+        }
+
+        let child_n = n - 1;
+        let mut child_hp = hp.clone();
+        let child_orgs = orgs - gag.is_org as u8;
+        let mut child_used = used.clone();
+        use_gag(&mut child_hp, is_lured, &mut child_used, gag);
+
+        for Combo(child_cost, child_picks) in k_opt(cache,
+                                                    gags,
+                                                    is_lured,
+                                                    k,
+                                                    child_n,
+                                                    child_hp,
+                                                    child_orgs,
+                                                    child_used).into_iter()
+        {
+            let new_cost = child_cost + gag.cost;
+            if new_cost >= k_best.peek().map_or(std::i32::MAX, |c| c.0) {
+                continue;
+            }
+
+            let mut new_picks = child_picks;
+            new_picks.place_back() <- gag.clone();
+            new_picks.sort_unstable();
+            let new_picks_hash = hash_picks(&new_picks);
+            if !pick_hashes_found.insert(new_picks_hash) {
+                continue;
+            }
+
+            let new_combo = Combo(new_cost, new_picks);
+
+            if k_best.len() >= k as usize {
+                k_best.pop();
+            }
+            k_best.push(new_combo);
+        }
+    }
+
+    // Update cache
+    let res = k_best.into_sorted_vec();
+    cache.insert(args, res.clone());
+
+    // Done
+    res
+}
+
+pub fn k_opt_combos(k:          u8,
+                    gags:       &Vec<Gag>,
+                    cog_level:  u8,
+                    is_lured:   bool,
+                    is_v2:      bool,
+                    toon_count: u8,
+                    org_count:  u8) -> Vec<Vec<Gag>>
+{
+    let mut cache = Map::default();
+
+    k_opt(&mut cache,
+          gags,
+          is_lured,
+          k,
+          toon_count,
+          Hp::new(cog_level, is_v2),
+          org_count,
+          GagHistory::new()).into_iter().map(|c| c.1).collect()
 }
 
 fn opt(// Constant

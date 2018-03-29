@@ -34,6 +34,9 @@ pub struct SimpleGag {
     pub dmg:      i16,
 }
 
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+pub struct Combo(pub i32, pub Vec<Gag>);
+
 
 pub const GAG_TYPES: [GagType; 6] = [
     GagType::TrapGag,
@@ -119,6 +122,42 @@ impl Gag {
             gag_type: self.gag_type.clone(),
             dmg:      self.base_dmg,
         }
+    }
+}
+
+impl PartialOrd for Gag {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(match self.cost.cmp(&other.cost) {
+            Ordering::Equal => match self.base_dmg.cmp(&other.base_dmg) {
+                Ordering::Equal => self.gag_type.cmp(&other.gag_type),
+                o               => o,
+            },
+            o => o,
+        })
+    }
+}
+
+impl Ord for Gag {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match self.cost.cmp(&other.cost) {
+            Ordering::Equal => match self.base_dmg.cmp(&other.base_dmg) {
+                Ordering::Equal => self.gag_type.cmp(&other.gag_type),
+                o               => o,
+            },
+            o => o,
+        }
+    }
+}
+
+impl PartialOrd for Combo {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.0.cmp(&other.0))
+    }
+}
+
+impl Ord for Combo {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.0.cmp(&other.0)
     }
 }
 
