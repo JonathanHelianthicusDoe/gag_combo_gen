@@ -65,7 +65,7 @@ fn k_opt(// Constant
             }
 
             let mut new_picks = child_picks;
-            new_picks.place_back() <- gag.clone();
+            new_picks.push(gag.clone());
             new_picks.sort_unstable();
             let new_picks_hash = hash_picks(&new_picks);
             if !pick_hashes_found.insert(new_picks_hash) {
@@ -206,7 +206,7 @@ pub fn opt_combo(gags:       &Vec<Gag>,
         let mut next_gag = Some(first_gag);
         let mut args = (toon_count, hp, org_count, GagHistory::new());
         while let Some(gag) = next_gag {
-            res.place_back() <- gag.clone();
+            res.push(gag.clone());
 
             args.0 -= 1;
             args.2 -= gag.is_org as u8;
@@ -220,7 +220,7 @@ pub fn opt_combo(gags:       &Vec<Gag>,
         }
 
         while res.len() < toon_count as usize {
-            res.place_back() <- PASS;
+            res.push(PASS);
         }
 
         Some(res)
