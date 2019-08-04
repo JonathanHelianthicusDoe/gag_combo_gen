@@ -1,12 +1,9 @@
-#![feature(collection_placement)]
-#![feature(placement_in_syntax)]
-
 pub mod gag_types;
 pub mod gags;
 mod hp;
 pub mod opt;
 
-extern crate fnv;
+extern crate hashbrown;
 #[macro_use]
 extern crate lazy_static;
 

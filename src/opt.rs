@@ -1,4 +1,4 @@
-use fnv::{FnvHashMap as Map, FnvHashSet as Set};
+use hashbrown::{HashMap as Map, HashSet as Set};
 use gag_types::{Combo, Gag, GagHistory};
 use gags::{hash_picks, PASS};
 use hp::Hp;

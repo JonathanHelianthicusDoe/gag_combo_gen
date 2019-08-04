@@ -1,4 +1,4 @@
-use fnv::FnvHashMap as Map;
+use hashbrown::HashMap as Map;
 use gag_types::{Gag, GagType, SimpleGag};
 
 
