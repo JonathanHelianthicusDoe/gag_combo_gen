@@ -1,27 +1,28 @@
-use hashbrown::{HashMap as Map, HashSet as Set};
-use gag_types::{Combo, Gag, GagHistory};
-use gags::{hash_picks, PASS};
-use hp::Hp;
-use std;
-use std::collections::BinaryHeap as Heap;
-
+use crate::{
+    gag_types::{Combo, Gag, GagHistory},
+    gags::{hash_picks, PASS},
+    hp::Hp,
+};
+use fxhash::{FxHashMap as Map, FxHashSet as Set};
+use std::{self, collections::BinaryHeap as Heap};
 
 fn use_gag(hp: &mut Hp, is_lured: bool, used: &mut GagHistory, gag: &Gag) {
     used.add_gag(gag);
     hp.apply_all_gags(is_lured, used);
 }
 
-fn k_opt(// Constant
-         cache:     &mut Map<(u8, Hp, u8, GagHistory), Vec<Combo>>,
-         gags:      &Vec<Gag>,
-         is_lured:  bool,
-         k:         u8,
-         // Non-constant
-         n:         u8,
-         hp:        Hp,
-         orgs:      u8,
-         used:      GagHistory) -> Vec<Combo>
-{
+fn k_opt(
+    // Constant
+    cache: &mut Map<(u8, Hp, u8, GagHistory), Vec<Combo>>,
+    gags: &Vec<Gag>,
+    is_lured: bool,
+    k: u8,
+    // Non-constant
+    n: u8,
+    hp: Hp,
+    orgs: u8,
+    used: GagHistory,
+) -> Vec<Combo> {
     // Base cases
     if hp.is_dead() {
         return vec![Combo(0, Vec::new())];
@@ -50,14 +51,11 @@ fn k_opt(// Constant
         let mut child_used = used.clone();
         use_gag(&mut child_hp, is_lured, &mut child_used, gag);
 
-        for Combo(child_cost, child_picks) in k_opt(cache,
-                                                    gags,
-                                                    is_lured,
-                                                    k,
-                                                    child_n,
-                                                    child_hp,
-                                                    child_orgs,
-                                                    child_used).into_iter()
+        for Combo(child_cost, child_picks) in k_opt(
+            cache, gags, is_lured, k, child_n, child_hp, child_orgs,
+            child_used,
+        )
+        .into_iter()
         {
             let new_cost = child_cost + gag.cost;
             if new_cost >= k_best.peek().map_or(std::i32::MAX, |c| c.0) {
@@ -89,36 +87,43 @@ fn k_opt(// Constant
     res
 }
 
-pub fn k_opt_combos(k:          u8,
-                    gags:       &Vec<Gag>,
-                    cog_level:  u8,
-                    is_lured:   bool,
-                    is_v2:      bool,
-                    toon_count: u8,
-                    org_count:  u8) -> Vec<Vec<Gag>>
-{
+pub fn k_opt_combos(
+    k: u8,
+    gags: &Vec<Gag>,
+    cog_level: u8,
+    is_lured: bool,
+    is_v2: bool,
+    toon_count: u8,
+    org_count: u8,
+) -> Vec<Vec<Gag>> {
     let mut cache = Map::default();
 
-    k_opt(&mut cache,
-          gags,
-          is_lured,
-          k,
-          toon_count,
-          Hp::new(cog_level, is_v2),
-          org_count,
-          GagHistory::new()).into_iter().map(|c| c.1).collect()
+    k_opt(
+        &mut cache,
+        gags,
+        is_lured,
+        k,
+        toon_count,
+        Hp::new(cog_level, is_v2),
+        org_count,
+        GagHistory::new(),
+    )
+    .into_iter()
+    .map(|c| c.1)
+    .collect()
 }
 
-fn opt(// Constant
-       cache:     &mut Map<(u8, Hp, u8, GagHistory), Option<(i32, Gag)>>,
-       gags:      &Vec<Gag>,
-       is_lured:  bool,
-       // Non-constant
-       n:         u8,
-       hp:        Hp,
-       orgs:      u8,
-       used:      GagHistory) -> Option<(i32, Gag)>
-{
+fn opt(
+    // Constant
+    cache: &mut Map<(u8, Hp, u8, GagHistory), Option<(i32, Gag)>>,
+    gags: &Vec<Gag>,
+    is_lured: bool,
+    // Non-constant
+    n: u8,
+    hp: Hp,
+    orgs: u8,
+    used: GagHistory,
+) -> Option<(i32, Gag)> {
     // Base cases
     if hp.is_dead() {
         return Some((0, PASS));
@@ -147,14 +152,9 @@ fn opt(// Constant
         let mut child_used = used.clone();
         use_gag(&mut child_hp, is_lured, &mut child_used, gag);
 
-        if let Some((child_cost, _)) = opt(cache,
-                                           gags,
-                                           is_lured,
-                                           child_n,
-                                           child_hp,
-                                           child_orgs,
-                                           child_used)
-        {
+        if let Some((child_cost, _)) = opt(
+            cache, gags, is_lured, child_n, child_hp, child_orgs, child_used,
+        ) {
             let new_min_cost = child_cost + gag.cost;
             if new_min_cost < min_cost {
                 min_cost = new_min_cost;
@@ -185,24 +185,26 @@ fn opt(// Constant
     res
 }
 
-pub fn opt_combo(gags:       &Vec<Gag>,
-                 cog_level:  u8,
-                 is_lured:   bool,
-                 is_v2:      bool,
-                 toon_count: u8,
-                 org_count:  u8) -> Option<Vec<Gag>>
-{
+pub fn opt_combo(
+    gags: &Vec<Gag>,
+    cog_level: u8,
+    is_lured: bool,
+    is_v2: bool,
+    toon_count: u8,
+    org_count: u8,
+) -> Option<Vec<Gag>> {
     let mut cache = Map::default();
     let hp = Hp::new(cog_level, is_v2);
     let mut res = Vec::with_capacity(toon_count as usize);
-    if let Some((_, first_gag)) = opt(&mut cache,
-                                      gags,
-                                      is_lured,
-                                      toon_count,
-                                      hp.clone(),
-                                      org_count,
-                                      GagHistory::new())
-    {
+    if let Some((_, first_gag)) = opt(
+        &mut cache,
+        gags,
+        is_lured,
+        toon_count,
+        hp.clone(),
+        org_count,
+        GagHistory::new(),
+    ) {
         let mut next_gag = Some(first_gag);
         let mut args = (toon_count, hp, org_count, GagHistory::new());
         while let Some(gag) = next_gag {

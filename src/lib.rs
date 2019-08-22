@@ -3,19 +3,16 @@ pub mod gags;
 mod hp;
 pub mod opt;
 
-extern crate hashbrown;
+extern crate fxhash;
 #[macro_use]
 extern crate lazy_static;
 
-
 #[cfg(test)]
 mod tests {
-    use gag_types::Gag;
-    use gag_types::GagType::{DropGag, SoundGag, SquirtGag, ThrowGag, TrapGag};
-    use gags::{
-        DROP_GAGS, PASS, SOUND_GAGS, SQUIRT_GAGS, THROW_GAGS, TRAP_GAGS,
-    };
-    use opt::opt_combo;
+    use crate::gag_types::Gag;
+    use crate::gag_types::GagType::{DropGag, SoundGag, SquirtGag, ThrowGag, TrapGag};
+    use crate::gags::*;
+    use crate::opt::opt_combo;
 
     #[test]
     fn pie_slice_test() {
@@ -113,7 +110,7 @@ mod tests {
             opt_combo(&default_gags.iter().filter(|g| g.gag_type == ThrowGag).cloned().collect(), 2, true, false, 1, 0),
             Some(vec![
                 Gag { name: "fruit_pie_slice", gag_type: ThrowGag, is_org: false, base_dmg: 10, cost: 160 },
-            ])
+            ]),
         );
     }
 
@@ -154,7 +151,7 @@ mod tests {
             Some(vec![
                 Gag { name: "squirtgun",   gag_type: SquirtGag, is_org: false, base_dmg: 12 },
                 Gag { name: "storm_cloud", gag_type: SquirtGag, is_org: false, base_dmg: 80 },
-            ])
+            ]),
         );
         assert_eq!(
             opt_combo(&some_gags, 11, true, false, 3, 1),
@@ -162,7 +159,7 @@ mod tests {
                 Gag { name: "fire_hose", gag_type: SquirtGag, is_org: false, base_dmg: 30 },
                 Gag { name: "fire_hose", gag_type: SquirtGag, is_org: false, base_dmg: 30 },
                 Gag { name: "fire_hose", gag_type: SquirtGag, is_org: true,  base_dmg: 33 },
-            ])
+            ]),
         );
         assert_eq!(
             opt_combo(&some_gags, 11, true, false, 4, 4),
@@ -171,7 +168,7 @@ mod tests {
                 Gag { name: "seltzer_bottle", gag_type: SquirtGag, is_org: true, base_dmg: 23 },
                 Gag { name: "seltzer_bottle", gag_type: SquirtGag, is_org: true, base_dmg: 23 },
                 Gag { name: "seltzer_bottle", gag_type: SquirtGag, is_org: true, base_dmg: 23 },
-            ])
+            ]),
         );
         assert_eq!(
             opt_combo(&some_gags, 3, true, false, 4, 4),
@@ -180,7 +177,7 @@ mod tests {
                 Gag { name: "squirting_flower", gag_type: SquirtGag, is_org: false, base_dmg: 4 },
                 Gag { name: "squirting_flower", gag_type: SquirtGag, is_org: false, base_dmg: 4 },
                 Gag { name: "squirting_flower", gag_type: SquirtGag, is_org: false, base_dmg: 4 },
-            ])
+            ]),
         );
         assert_eq!(
             opt_combo(&some_gags, 11, true, true, 3, 3),
@@ -188,7 +185,7 @@ mod tests {
                 Gag { name: "storm_cloud", gag_type: SquirtGag, is_org: false, base_dmg: 80 },
                 Gag { name: "storm_cloud", gag_type: SquirtGag, is_org: false, base_dmg: 80 },
                 Gag { name: "storm_cloud", gag_type: SquirtGag, is_org: false, base_dmg: 80 },
-            ])
+            ]),
         );
 
         let mut some_gags = Vec::with_capacity(5 * 7 * 2);
@@ -208,7 +205,7 @@ mod tests {
                 Gag { name: "anvil",       gag_type: DropGag, is_org: false, base_dmg: 30  },
                 Gag { name: "grand_piano", gag_type: DropGag, is_org: false, base_dmg: 170 },
                 Gag { name: "grand_piano", gag_type: DropGag, is_org: false, base_dmg: 170 },
-            ])
+            ]),
         );
     }
     */

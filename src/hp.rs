@@ -1,6 +1,7 @@
-use gag_types::{GagHistory, GagType};
-use gags::SIMPLE_PASS;
-
+use crate::{
+    gag_types::{GagHistory, GagType},
+    gags::SIMPLE_PASS,
+};
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct Hp {
@@ -9,7 +10,6 @@ pub struct Hp {
     pub fst_max:   i16,
     pub snd_max:   i16,
 }
-
 
 impl Hp {
     pub fn new(cog_level: u8, is_v2: bool) -> Self {
@@ -47,10 +47,10 @@ impl Hp {
 
         let mut is_lured = is_lured;
         let mut trapped = false;
-        let (mut multi_sound,  mut sound_dmg)  = (false, 0);
-        let (mut multi_throw,  mut throw_dmg)  = (false, 0);
+        let (mut multi_sound, mut sound_dmg) = (false, 0);
+        let (mut multi_throw, mut throw_dmg) = (false, 0);
         let (mut multi_squirt, mut squirt_dmg) = (false, 0);
-        let (mut multi_drop,   mut drop_dmg)   = (false, 0);
+        let (mut multi_drop, mut drop_dmg) = (false, 0);
         let gags = [&used.0, &used.1, &used.2, &used.3, &SIMPLE_PASS];
         for g in gags.into_iter() {
             if g.gag_type != GagType::SoundGag && multi_sound {
@@ -79,16 +79,17 @@ impl Hp {
             }
 
             match g.gag_type {
-                GagType::TrapGag => if is_lured {
-                    if trapped {
-                        self.fst_shell = self.fst_max;
-                        is_lured = is_lured;
-                    } else {
-                        self.fst_shell -= g.dmg;
-                        trapped = true;
-                        is_lured = false;
-                    }
-                },
+                GagType::TrapGag =>
+                    if is_lured {
+                        if trapped {
+                            self.fst_shell = self.fst_max;
+                            is_lured = is_lured;
+                        } else {
+                            self.fst_shell -= g.dmg;
+                            trapped = true;
+                            is_lured = false;
+                        }
+                    },
                 GagType::SoundGag => {
                     if sound_dmg > 0 {
                         multi_sound = true;
@@ -111,13 +112,14 @@ impl Hp {
                     self.do_dmg(g.dmg);
                     squirt_dmg += g.dmg;
                 },
-                GagType::DropGag => if !is_lured {
-                    if drop_dmg > 0 {
-                        multi_drop = true;
-                    }
-                    self.do_dmg(g.dmg);
-                    drop_dmg += g.dmg;
-                },
+                GagType::DropGag =>
+                    if !is_lured {
+                        if drop_dmg > 0 {
+                            multi_drop = true;
+                        }
+                        self.do_dmg(g.dmg);
+                        drop_dmg += g.dmg;
+                    },
                 _ => break,
             }
         }

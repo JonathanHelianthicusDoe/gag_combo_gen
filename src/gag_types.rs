@@ -1,23 +1,23 @@
-use gags::SIMPLE_PASS;
-use std::cmp::Ordering;
-use std::mem::swap;
-
+use crate::gags::SIMPLE_PASS;
+use std::{cmp::Ordering, mem::swap};
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum GagType {
-    TrapGag   = 0,
-    SoundGag  = 1,
-    ThrowGag  = 2,
+    TrapGag = 0,
+    SoundGag = 1,
+    ThrowGag = 2,
     SquirtGag = 3,
-    DropGag   = 4,
-    PassGag   = 5,
+    DropGag = 4,
+    PassGag = 5,
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
-pub struct GagHistory(pub SimpleGag,
-                      pub SimpleGag,
-                      pub SimpleGag,
-                      pub SimpleGag);
+pub struct GagHistory(
+    pub SimpleGag,
+    pub SimpleGag,
+    pub SimpleGag,
+    pub SimpleGag,
+);
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Gag {
@@ -37,7 +37,6 @@ pub struct SimpleGag {
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Combo(pub i32, pub Vec<Gag>);
 
-
 pub const GAG_TYPES: [GagType; 6] = [
     GagType::TrapGag,
     GagType::SoundGag,
@@ -46,7 +45,6 @@ pub const GAG_TYPES: [GagType; 6] = [
     GagType::DropGag,
     GagType::PassGag,
 ];
-
 
 impl PartialOrd for GagType {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -63,12 +61,12 @@ impl Ord for GagType {
 impl GagType {
     pub fn as_u8(&self) -> u8 {
         match self {
-            &GagType::TrapGag   => 0,
-            &GagType::SoundGag  => 1,
-            &GagType::ThrowGag  => 2,
+            &GagType::TrapGag => 0,
+            &GagType::SoundGag => 1,
+            &GagType::ThrowGag => 2,
             &GagType::SquirtGag => 3,
-            &GagType::DropGag   => 4,
-            &GagType::PassGag   => 5,
+            &GagType::DropGag => 4,
+            &GagType::PassGag => 5,
         }
     }
 }
@@ -130,7 +128,7 @@ impl PartialOrd for Gag {
         Some(match self.cost.cmp(&other.cost) {
             Ordering::Equal => match self.base_dmg.cmp(&other.base_dmg) {
                 Ordering::Equal => self.gag_type.cmp(&other.gag_type),
-                o               => o,
+                o => o,
             },
             o => o,
         })
@@ -142,7 +140,7 @@ impl Ord for Gag {
         match self.cost.cmp(&other.cost) {
             Ordering::Equal => match self.base_dmg.cmp(&other.base_dmg) {
                 Ordering::Equal => self.gag_type.cmp(&other.gag_type),
-                o               => o,
+                o => o,
             },
             o => o,
         }
@@ -165,7 +163,7 @@ impl PartialOrd for SimpleGag {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         match self.gag_type.cmp(&other.gag_type) {
             Ordering::Equal => Some(self.dmg.cmp(&other.dmg)),
-            o               => Some(o),
+            o => Some(o),
         }
     }
 }
@@ -174,7 +172,7 @@ impl Ord for SimpleGag {
     fn cmp(&self, other: &Self) -> Ordering {
         match self.gag_type.cmp(&other.gag_type) {
             Ordering::Equal => self.dmg.cmp(&other.dmg),
-            o               => o,
+            o => o,
         }
     }
 }
