@@ -1,5 +1,6 @@
 use crate::gag_types::{Gag, GagType, SimpleGag};
 use fxhash::FxHashMap as Map;
+use lazy_static::lazy_static;
 
 pub const PASS: Gag = Gag {
     name:     "pass",
@@ -328,7 +329,7 @@ pub fn hash_gag(gag: &Gag) -> u32 {
     GAG_HASHES[gag.name] + if gag.is_org { 35 } else { 0 }
 }
 
-pub fn hash_picks(picks: &Vec<Gag>) -> u32 {
+pub fn hash_picks(picks: &[Gag]) -> u32 {
     let mut hash = 0;
     for g in picks {
         hash <<= 8;

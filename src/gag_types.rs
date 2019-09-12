@@ -1,7 +1,7 @@
 use crate::gags::SIMPLE_PASS;
 use std::{cmp::Ordering, mem::swap};
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum GagType {
     TrapGag = 0,
     SoundGag = 1,
@@ -48,26 +48,29 @@ pub const GAG_TYPES: [GagType; 6] = [
 
 impl PartialOrd for GagType {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.as_u8().cmp(&other.as_u8()))
+        let n: u8 = (*self).into();
+
+        Some(n.cmp(&(*other).into()))
     }
 }
 
 impl Ord for GagType {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.as_u8().cmp(&other.as_u8())
+        let n: u8 = (*self).into();
+
+        n.cmp(&(*other).into())
     }
 }
 
-impl GagType {
-    pub fn as_u8(&self) -> u8 {
-        match self {
-            &GagType::TrapGag => 0,
-            &GagType::SoundGag => 1,
-            &GagType::ThrowGag => 2,
-            &GagType::SquirtGag => 3,
-            &GagType::DropGag => 4,
-            &GagType::PassGag => 5,
-        }
+impl Into<u8> for GagType {
+    fn into(self) -> u8 {
+        self as u8
+    }
+}
+
+impl Default for GagHistory {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -117,7 +120,7 @@ impl Gag {
 
     pub fn simple(&self) -> SimpleGag {
         SimpleGag {
-            gag_type: self.gag_type.clone(),
+            gag_type: self.gag_type,
             dmg:      self.base_dmg,
         }
     }

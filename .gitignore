@@ -2,3 +2,7 @@
 /target
 **/*.rs.bk
 Cargo.lock
+
+# Text editor stuff
+.vscode/
+*.swp

@@ -13,11 +13,11 @@ pub struct Hp {
 
 impl Hp {
     pub fn new(cog_level: u8, is_v2: bool) -> Self {
-        let fst_shell = if cog_level >= 12 {
+        let fst_shell = i16::from(if cog_level >= 12 {
             200
         } else {
             (cog_level + 1) * (cog_level + 2)
-        } as i16;
+        });
 
         let snd_shell = if is_v2 { fst_shell } else { 0 };
 
@@ -52,7 +52,7 @@ impl Hp {
         let (mut multi_squirt, mut squirt_dmg) = (false, 0);
         let (mut multi_drop, mut drop_dmg) = (false, 0);
         let gags = [&used.0, &used.1, &used.2, &used.3, &SIMPLE_PASS];
-        for g in gags.into_iter() {
+        for g in gags.iter() {
             if g.gag_type != GagType::SoundGag && multi_sound {
                 self.do_dmg((sound_dmg - 1) / 5 + 1);
                 multi_sound = false;

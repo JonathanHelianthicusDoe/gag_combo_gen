@@ -6,15 +6,40 @@ use crate::{
 use fxhash::{FxHashMap as Map, FxHashSet as Set};
 use std::{self, collections::BinaryHeap as Heap};
 
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+struct Args {
+    toon_count:  u8,
+    cog_hp:      Hp,
+    org_count:   u8,
+    gag_history: GagHistory,
+}
+
+impl Args {
+    fn new(
+        toon_count: u8,
+        cog_hp: Hp,
+        org_count: u8,
+        gag_history: GagHistory,
+    ) -> Self {
+        Self {
+            toon_count,
+            cog_hp,
+            org_count,
+            gag_history,
+        }
+    }
+}
+
 fn use_gag(hp: &mut Hp, is_lured: bool, used: &mut GagHistory, gag: &Gag) {
     used.add_gag(gag);
     hp.apply_all_gags(is_lured, used);
 }
 
+#[allow(clippy::too_many_arguments)]
 fn k_opt(
     // Constant
-    cache: &mut Map<(u8, Hp, u8, GagHistory), Vec<Combo>>,
-    gags: &Vec<Gag>,
+    cache: &mut Map<Args, Vec<Combo>>,
+    gags: &[Gag],
     is_lured: bool,
     k: u8,
     // Non-constant
@@ -32,7 +57,7 @@ fn k_opt(
     }
 
     // Consult the cache
-    let args = (n, hp.clone(), orgs, used.clone());
+    let args = Args::new(n, hp.clone(), orgs, used.clone());
     if let Some(cached) = cache.get(&args) {
         return cached.clone();
     }
@@ -89,7 +114,7 @@ fn k_opt(
 
 pub fn k_opt_combos(
     k: u8,
-    gags: &Vec<Gag>,
+    gags: &[Gag],
     cog_level: u8,
     is_lured: bool,
     is_v2: bool,
@@ -115,8 +140,8 @@ pub fn k_opt_combos(
 
 fn opt(
     // Constant
-    cache: &mut Map<(u8, Hp, u8, GagHistory), Option<(i32, Gag)>>,
-    gags: &Vec<Gag>,
+    cache: &mut Map<Args, Option<(i32, Gag)>>,
+    gags: &[Gag],
     is_lured: bool,
     // Non-constant
     n: u8,
@@ -133,7 +158,7 @@ fn opt(
     }
 
     // Consult the cache
-    let args = (n, hp.clone(), orgs, used.clone());
+    let args = Args::new(n, hp.clone(), orgs, used.clone());
     if let Some(cached) = cache.get(&args) {
         return cached.clone();
     }
@@ -186,7 +211,7 @@ fn opt(
 }
 
 pub fn opt_combo(
-    gags: &Vec<Gag>,
+    gags: &[Gag],
     cog_level: u8,
     is_lured: bool,
     is_v2: bool,
@@ -206,15 +231,15 @@ pub fn opt_combo(
         GagHistory::new(),
     ) {
         let mut next_gag = Some(first_gag);
-        let mut args = (toon_count, hp, org_count, GagHistory::new());
+        let mut args = Args::new(toon_count, hp, org_count, GagHistory::new());
         while let Some(gag) = next_gag {
             res.push(gag.clone());
 
-            args.0 -= 1;
-            args.2 -= gag.is_org as u8;
-            use_gag(&mut args.1, is_lured, &mut args.3, &gag);
+            args.toon_count -= 1;
+            args.org_count -= gag.is_org as u8;
+            use_gag(&mut args.cog_hp, is_lured, &mut args.gag_history, &gag);
 
-            if args.1.is_dead() {
+            if args.cog_hp.is_dead() {
                 break;
             }
 

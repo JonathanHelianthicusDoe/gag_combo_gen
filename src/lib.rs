@@ -1,11 +1,10 @@
+#![forbid(unsafe_code)]
+#![deny(clippy::all)]
+
 pub mod gag_types;
 pub mod gags;
 mod hp;
 pub mod opt;
-
-extern crate fxhash;
-#[macro_use]
-extern crate lazy_static;
 
 #[cfg(test)]
 mod tests {
@@ -18,7 +17,7 @@ mod tests {
     fn pie_slice_test() {
         println!();
 
-        let ref default_gags: Vec<Gag> = vec![
+        let default_gags: Vec<Gag> = vec![
             PASS,
 
             Gag { name: "banana_peel",      gag_type: TrapGag,   is_org: false, base_dmg: 12,  cost: 10      },
@@ -81,35 +80,51 @@ mod tests {
             Gag { name: "fire_hose",        gag_type: SquirtGag, is_org: true,  base_dmg: 33,  cost: 56000   },
             Gag { name: "cream_pie",        gag_type: ThrowGag,  is_org: true,  base_dmg: 44,  cost: 60000   },
 
-            Gag { name: "storm_cloud",      gag_type: SquirtGag, is_org: false, base_dmg: 80,  cost: 400000  },
-            Gag { name: "cake",             gag_type: ThrowGag,  is_org: false, base_dmg: 100, cost: 500000  },
-            Gag { name: "grand_piano",      gag_type: DropGag,   is_org: false, base_dmg: 170, cost: 640000  },
-            Gag { name: "tnt",              gag_type: TrapGag,   is_org: false, base_dmg: 180, cost: 666000  },
-            Gag { name: "foghorn",          gag_type: SoundGag,  is_org: false, base_dmg: 50,  cost: 700000  },
+            Gag { name: "storm_cloud",      gag_type: SquirtGag, is_org: false, base_dmg: 80,  cost: 400_000  },
+            Gag { name: "cake",             gag_type: ThrowGag,  is_org: false, base_dmg: 100, cost: 500_000  },
+            Gag { name: "grand_piano",      gag_type: DropGag,   is_org: false, base_dmg: 170, cost: 640_000  },
+            Gag { name: "tnt",              gag_type: TrapGag,   is_org: false, base_dmg: 180, cost: 666_000  },
+            Gag { name: "foghorn",          gag_type: SoundGag,  is_org: false, base_dmg: 50,  cost: 700_000  },
 
-            Gag { name: "storm_cloud",      gag_type: SquirtGag, is_org: true,  base_dmg: 88,  cost: 470000  },
-            Gag { name: "cake",             gag_type: ThrowGag,  is_org: true,  base_dmg: 110, cost: 600000  },
-            Gag { name: "grand_piano",      gag_type: DropGag,   is_org: true,  base_dmg: 187, cost: 680000  },
-            Gag { name: "tnt",              gag_type: TrapGag,   is_org: true,  base_dmg: 198, cost: 690000  },
-            Gag { name: "foghorn",          gag_type: SoundGag,  is_org: true,  base_dmg: 55,  cost: 820000  },
+            Gag { name: "storm_cloud",      gag_type: SquirtGag, is_org: true,  base_dmg: 88,  cost: 470_000  },
+            Gag { name: "cake",             gag_type: ThrowGag,  is_org: true,  base_dmg: 110, cost: 600_000  },
+            Gag { name: "grand_piano",      gag_type: DropGag,   is_org: true,  base_dmg: 187, cost: 680_000  },
+            Gag { name: "tnt",              gag_type: TrapGag,   is_org: true,  base_dmg: 198, cost: 690_000  },
+            Gag { name: "foghorn",          gag_type: SoundGag,  is_org: true,  base_dmg: 55,  cost: 820_000  },
 
-            Gag { name: "geyser",           gag_type: SquirtGag, is_org: false, base_dmg: 105, cost: 4000000 },
-            Gag { name: "opera_singer",     gag_type: SoundGag,  is_org: false, base_dmg: 90,  cost: 6000000 },
-            Gag { name: "wedding_cake",     gag_type: ThrowGag,  is_org: false, base_dmg: 120, cost: 6010000 },
-            Gag { name: "toontanic",        gag_type: DropGag,   is_org: false, base_dmg: 180, cost: 7000000 },
-            Gag { name: "railroad",         gag_type: TrapGag,   is_org: false, base_dmg: 195, cost: 7010000 },
+            Gag { name: "geyser",           gag_type: SquirtGag, is_org: false, base_dmg: 105, cost: 4_000_000 },
+            Gag { name: "opera_singer",     gag_type: SoundGag,  is_org: false, base_dmg: 90,  cost: 6_000_000 },
+            Gag { name: "wedding_cake",     gag_type: ThrowGag,  is_org: false, base_dmg: 120, cost: 6_010_000 },
+            Gag { name: "toontanic",        gag_type: DropGag,   is_org: false, base_dmg: 180, cost: 7_000_000 },
+            Gag { name: "railroad",         gag_type: TrapGag,   is_org: false, base_dmg: 195, cost: 7_010_000 },
 
-            Gag { name: "geyser",           gag_type: SquirtGag, is_org: true,  base_dmg: 115, cost: 4500000 },
-            Gag { name: "opera_singer",     gag_type: SoundGag,  is_org: true,  base_dmg: 99,  cost: 6500000 },
-            Gag { name: "wedding_cake",     gag_type: ThrowGag,  is_org: true,  base_dmg: 132, cost: 6510000 },
-            Gag { name: "toontanic",        gag_type: DropGag,   is_org: true,  base_dmg: 198, cost: 7010000 },
-            Gag { name: "railroad",         gag_type: TrapGag,   is_org: true,  base_dmg: 214, cost: 7777777 },
+            Gag { name: "geyser",           gag_type: SquirtGag, is_org: true,  base_dmg: 115, cost: 4_500_000 },
+            Gag { name: "opera_singer",     gag_type: SoundGag,  is_org: true,  base_dmg: 99,  cost: 6_500_000 },
+            Gag { name: "wedding_cake",     gag_type: ThrowGag,  is_org: true,  base_dmg: 132, cost: 6_510_000 },
+            Gag { name: "toontanic",        gag_type: DropGag,   is_org: true,  base_dmg: 198, cost: 7_010_000 },
+            Gag { name: "railroad",         gag_type: TrapGag,   is_org: true,  base_dmg: 214, cost: 7_777_777 },
         ];
 
         assert_eq!(
-            opt_combo(&default_gags.iter().filter(|g| g.gag_type == ThrowGag).cloned().collect(), 2, true, false, 1, 0),
+            opt_combo(
+                &default_gags.iter()
+                    .filter(|g| g.gag_type == ThrowGag)
+                    .cloned()
+                    .collect::<Vec<_>>(),
+                2,
+                true,
+                false,
+                1,
+                0,
+            ),
             Some(vec![
-                Gag { name: "fruit_pie_slice", gag_type: ThrowGag, is_org: false, base_dmg: 10, cost: 160 },
+                Gag {
+                    name:     "fruit_pie_slice",
+                    gag_type: ThrowGag,
+                    is_org:   false,
+                    base_dmg: 10,
+                    cost:     160,
+                },
             ]),
         );
     }
