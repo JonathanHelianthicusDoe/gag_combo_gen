@@ -1,9 +1,11 @@
 [package]
 name = "gag_combo_gen"
-version = "0.1.4"
-authors = ["Dr. Jonathan Helianthicus Doe, Ⅳ <augiii@protonmail.com>"]
+version = "0.1.5"
+authors = ["Dr. Jonathan Helianthicus Doe, IV <augiii@protonmail.com>"]
 edition = "2018"
-description = "Generates optimal single-cog gag combinations given user constraints (back-end)"
+description = """
+Generates optimal single-cog gag combinations given user constraints \
+(back-end)"""
 homepage = "https://zz.nfshost.com/"
 repository = "https://github.com/JonathanHelianthicusDoe/gag_combo_gen"
 readme = "README.md"
@@ -15,13 +17,5 @@ license = "AGPL-3.0-or-later"
 fxhash = "0.2.1"
 lazy_static = "1.4.0"
 
-[profile.release]
-opt-level = 3
-debug = false
-rpath = false
-lto = "fat"
-debug-assertions = false
-codegen-units = 1
-panic = "abort"
-incremental = false
-overflow-checks = false
+[features]
+default = []
