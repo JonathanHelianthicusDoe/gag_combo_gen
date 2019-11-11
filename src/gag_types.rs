@@ -1,7 +1,8 @@
 use crate::gags::SIMPLE_PASS;
-use std::{cmp::Ordering, mem::swap};
+use std::{cmp::Ordering, mem};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[repr(u8)]
 pub enum GagType {
     TrapGag = 0,
     SoundGag = 1,
@@ -9,6 +10,52 @@ pub enum GagType {
     SquirtGag = 3,
     DropGag = 4,
     PassGag = 5,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[repr(u8)]
+pub enum GagName {
+    Pass = 0,
+
+    BananaPeel = 1,
+    Rake = 6,
+    Marbles = 11,
+    Quicksand = 16,
+    TrapDoor = 21,
+    Tnt = 26,
+    Railroad = 31,
+
+    Bikehorn = 2,
+    Whistle = 7,
+    Bugle = 12,
+    Aoogah = 17,
+    ElephantTrunk = 22,
+    Foghorn = 27,
+    OperaSinger = 32,
+
+    Cupcake = 3,
+    FruitPieSlice = 8,
+    CreamPieSlice = 13,
+    FruitPie = 18,
+    CreamPie = 23,
+    Cake = 28,
+    WeddingCake = 33,
+
+    SquirtingFlower = 4,
+    GlassOfWater = 9,
+    Squirtgun = 14,
+    SeltzerBottle = 19,
+    FireHose = 24,
+    StormCloud = 29,
+    Geyser = 34,
+
+    Flowerpot = 5,
+    Sandbag = 10,
+    Anvil = 15,
+    BigWeight = 20,
+    Safe = 25,
+    GrandPiano = 30,
+    Toontanic = 35,
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
@@ -21,7 +68,7 @@ pub struct GagHistory(
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Gag {
-    pub name:     &'static str,
+    pub name:     GagName,
     pub gag_type: GagType,
     pub is_org:   bool,
     pub base_dmg: i16,
@@ -35,7 +82,10 @@ pub struct SimpleGag {
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
-pub struct Combo(pub i32, pub Vec<Gag>);
+pub struct Combo {
+    pub cost:  i32,
+    pub picks: Vec<Gag>,
+}
 
 pub const GAG_TYPES: [GagType; 6] = [
     GagType::TrapGag,
@@ -82,16 +132,16 @@ impl GagHistory {
     pub fn add_gag(&mut self, gag: &Gag) {
         let simple = gag.simple();
         if self.0 > simple {
-            swap(&mut self.3, &mut self.2);
-            swap(&mut self.2, &mut self.1);
-            swap(&mut self.1, &mut self.0);
+            mem::swap(&mut self.3, &mut self.2);
+            mem::swap(&mut self.2, &mut self.1);
+            mem::swap(&mut self.1, &mut self.0);
             self.0 = simple;
         } else if self.1 > simple {
-            swap(&mut self.3, &mut self.2);
-            swap(&mut self.2, &mut self.1);
+            mem::swap(&mut self.3, &mut self.2);
+            mem::swap(&mut self.2, &mut self.1);
             self.1 = simple;
         } else if self.2 > simple {
-            swap(&mut self.3, &mut self.2);
+            mem::swap(&mut self.3, &mut self.2);
             self.2 = simple;
         } else {
             self.3 = simple;
@@ -115,7 +165,7 @@ impl Gag {
     }
 
     pub fn org_dmg(non_org_dmg: i16) -> i16 {
-        non_org_dmg + non_org_dmg / 10
+        non_org_dmg + (non_org_dmg / 10).max(1)
     }
 
     pub fn simple(&self) -> SimpleGag {
@@ -152,13 +202,13 @@ impl Ord for Gag {
 
 impl PartialOrd for Combo {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.0.cmp(&other.0))
+        Some(self.cost.cmp(&other.cost))
     }
 }
 
 impl Ord for Combo {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.0.cmp(&other.0)
+        self.cost.cmp(&other.cost)
     }
 }
 

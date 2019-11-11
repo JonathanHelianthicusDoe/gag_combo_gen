@@ -50,7 +50,10 @@ fn k_opt(
 ) -> Vec<Combo> {
     // Base cases
     if hp.is_dead() {
-        return vec![Combo(0, Vec::new())];
+        return vec![Combo {
+            cost:  0,
+            picks: Vec::new(),
+        }];
     }
     if n == 0 {
         return Vec::new();
@@ -76,14 +79,17 @@ fn k_opt(
         let mut child_used = used.clone();
         use_gag(&mut child_hp, is_lured, &mut child_used, gag);
 
-        for Combo(child_cost, child_picks) in k_opt(
+        for Combo {
+            cost: child_cost,
+            picks: child_picks,
+        } in k_opt(
             cache, gags, is_lured, k, child_n, child_hp, child_orgs,
             child_used,
         )
         .into_iter()
         {
             let new_cost = child_cost + gag.cost;
-            if new_cost >= k_best.peek().map_or(std::i32::MAX, |c| c.0) {
+            if new_cost >= k_best.peek().map_or(std::i32::MAX, |c| c.cost) {
                 continue;
             }
 
@@ -95,7 +101,10 @@ fn k_opt(
                 continue;
             }
 
-            let new_combo = Combo(new_cost, new_picks);
+            let new_combo = Combo {
+                cost:  new_cost,
+                picks: new_picks,
+            };
 
             if k_best.len() >= k as usize {
                 k_best.pop();
@@ -134,7 +143,7 @@ pub fn k_opt_combos(
         GagHistory::new(),
     )
     .into_iter()
-    .map(|c| c.1)
+    .map(|c| c.picks)
     .collect()
 }
 

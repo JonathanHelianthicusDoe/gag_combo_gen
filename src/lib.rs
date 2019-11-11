@@ -12,6 +12,7 @@ mod tests {
     use crate::{
         gag_types::{
             Gag,
+            GagName,
             GagType::{DropGag, SquirtGag, ThrowGag},
         },
         gags::{DEFAULT_GAGS, PASS},
@@ -35,7 +36,7 @@ mod tests {
                 0,
             ),
             Some(vec![Gag {
-                name:     "fruit_pie_slice",
+                name:     GagName::FruitPieSlice,
                 gag_type: ThrowGag,
                 is_org:   false,
                 base_dmg: 10,
@@ -50,14 +51,14 @@ mod tests {
             opt_combo(DEFAULT_GAGS, 11, true, false, 2, 1),
             Some(vec![
                 Gag {
-                    name:     "squirtgun",
+                    name:     GagName::Squirtgun,
                     gag_type: SquirtGag,
                     is_org:   false,
                     base_dmg: 12,
                     cost:     1_400,
                 },
                 Gag {
-                    name:     "storm_cloud",
+                    name:     GagName::StormCloud,
                     gag_type: SquirtGag,
                     is_org:   false,
                     base_dmg: 80,
@@ -74,21 +75,21 @@ mod tests {
             opt_combo(&squirt_gags, 11, true, false, 3, 1),
             Some(vec![
                 Gag {
-                    name:     "fire_hose",
+                    name:     GagName::FireHose,
                     gag_type: SquirtGag,
                     is_org:   false,
                     base_dmg: 30,
                     cost:     48_000,
                 },
                 Gag {
-                    name:     "fire_hose",
+                    name:     GagName::FireHose,
                     gag_type: SquirtGag,
                     is_org:   false,
                     base_dmg: 30,
                     cost:     48_000,
                 },
                 Gag {
-                    name:     "fire_hose",
+                    name:     GagName::FireHose,
                     gag_type: SquirtGag,
                     is_org:   true,
                     base_dmg: 33,
@@ -100,28 +101,28 @@ mod tests {
             opt_combo(&squirt_gags, 11, true, false, 4, 4),
             Some(vec![
                 Gag {
-                    name:     "seltzer_bottle",
+                    name:     GagName::SeltzerBottle,
                     gag_type: SquirtGag,
                     is_org:   true,
                     base_dmg: 23,
                     cost:     9_000,
                 },
                 Gag {
-                    name:     "seltzer_bottle",
+                    name:     GagName::SeltzerBottle,
                     gag_type: SquirtGag,
                     is_org:   true,
                     base_dmg: 23,
                     cost:     9_000,
                 },
                 Gag {
-                    name:     "seltzer_bottle",
+                    name:     GagName::SeltzerBottle,
                     gag_type: SquirtGag,
                     is_org:   true,
                     base_dmg: 23,
                     cost:     9_000,
                 },
                 Gag {
-                    name:     "seltzer_bottle",
+                    name:     GagName::SeltzerBottle,
                     gag_type: SquirtGag,
                     is_org:   true,
                     base_dmg: 23,
@@ -133,21 +134,21 @@ mod tests {
             opt_combo(&squirt_gags, 3, true, false, 4, 4),
             Some(vec![
                 Gag {
-                    name:     "squirting_flower",
+                    name:     GagName::SquirtingFlower,
                     gag_type: SquirtGag,
                     is_org:   false,
                     base_dmg: 4,
                     cost:     15,
                 },
                 Gag {
-                    name:     "squirting_flower",
+                    name:     GagName::SquirtingFlower,
                     gag_type: SquirtGag,
                     is_org:   false,
                     base_dmg: 4,
                     cost:     15,
                 },
                 Gag {
-                    name:     "squirting_flower",
+                    name:     GagName::SquirtingFlower,
                     gag_type: SquirtGag,
                     is_org:   false,
                     base_dmg: 4,
@@ -160,21 +161,21 @@ mod tests {
             opt_combo(DEFAULT_GAGS, 11, true, true, 3, 2),
             Some(vec![
                 Gag {
-                    name:     "big_weight",
+                    name:     GagName::BigWeight,
                     gag_type: DropGag,
                     is_org:   false,
                     base_dmg: 45,
                     cost:     6_000,
                 },
                 Gag {
-                    name:     "storm_cloud",
+                    name:     GagName::StormCloud,
                     gag_type: SquirtGag,
                     is_org:   false,
                     base_dmg: 80,
                     cost:     400_000,
                 },
                 Gag {
-                    name:     "storm_cloud",
+                    name:     GagName::StormCloud,
                     gag_type: SquirtGag,
                     is_org:   false,
                     base_dmg: 80,
@@ -187,21 +188,21 @@ mod tests {
             opt_combo(DEFAULT_GAGS, 12, false, true, 3, 3),
             Some(vec![
                 Gag {
-                    name:     "anvil",
+                    name:     GagName::Anvil,
                     gag_type: DropGag,
                     is_org:   false,
                     base_dmg: 30,
                     cost:     1_200,
                 },
                 Gag {
-                    name:     "grand_piano",
+                    name:     GagName::GrandPiano,
                     gag_type: DropGag,
                     is_org:   false,
                     base_dmg: 170,
                     cost:     740_000,
                 },
                 Gag {
-                    name:     "grand_piano",
+                    name:     GagName::GrandPiano,
                     gag_type: DropGag,
                     is_org:   false,
                     base_dmg: 170,
