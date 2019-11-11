@@ -1,5 +1,5 @@
 use crate::{
-    gag_types::{Combo, Gag, GagHistory},
+    gag_types::{Combo, Gag, GagHistory, GagType::TrapGag},
     gags::{hash_picks, PASS},
     hp::Hp,
 };
@@ -43,7 +43,7 @@ fn k_opt(
     is_lured: bool,
     k: u8,
     // Non-constant
-    n: u8,
+    toon_count: u8,
     hp: Hp,
     orgs: u8,
     used: GagHistory,
@@ -55,12 +55,12 @@ fn k_opt(
             picks: Vec::new(),
         }];
     }
-    if n == 0 {
+    if toon_count == 0 {
         return Vec::new();
     }
 
     // Consult the cache
-    let args = Args::new(n, hp.clone(), orgs, used.clone());
+    let args = Args::new(toon_count, hp.clone(), orgs, used.clone());
     if let Some(cached) = cache.get(&args) {
         return cached.clone();
     }
@@ -73,7 +73,19 @@ fn k_opt(
             continue;
         }
 
-        let child_n = n - 1;
+        // This logic is to prevent 4-gag combos that include trap, since we
+        // only care about 1-round combos, and someone has to do the lure!
+        let child_toon_count =
+            if gag.gag_type == TrapGag && toon_count + used.len() == 4 {
+                if toon_count >= 2 {
+                    toon_count - 2
+                } else {
+                    continue;
+                }
+            } else {
+                toon_count - 1
+            };
+
         let mut child_hp = hp.clone();
         let child_orgs = orgs - gag.is_org as u8;
         let mut child_used = used.clone();
@@ -83,7 +95,13 @@ fn k_opt(
             cost: child_cost,
             picks: child_picks,
         } in k_opt(
-            cache, gags, is_lured, k, child_n, child_hp, child_orgs,
+            cache,
+            gags,
+            is_lured,
+            k,
+            child_toon_count,
+            child_hp,
+            child_orgs,
             child_used,
         )
         .into_iter()
@@ -153,7 +171,7 @@ fn opt(
     gags: &[Gag],
     is_lured: bool,
     // Non-constant
-    n: u8,
+    toon_count: u8,
     hp: Hp,
     orgs: u8,
     used: GagHistory,
@@ -162,12 +180,12 @@ fn opt(
     if hp.is_dead() {
         return Some((0, PASS));
     }
-    if n == 0 {
+    if toon_count == 0 {
         return None;
     }
 
     // Consult the cache
-    let args = Args::new(n, hp.clone(), orgs, used.clone());
+    let args = Args::new(toon_count, hp.clone(), orgs, used.clone());
     if let Some(cached) = cache.get(&args) {
         return cached.clone();
     }
@@ -180,14 +198,32 @@ fn opt(
             continue;
         }
 
-        let child_n = n - 1;
+        // This logic is to prevent 4-gag combos that include trap, since we
+        // only care about 1-round combos, and someone has to do the lure!
+        let child_toon_count =
+            if gag.gag_type == TrapGag && toon_count + used.len() == 4 {
+                if toon_count >= 2 {
+                    toon_count - 2
+                } else {
+                    continue;
+                }
+            } else {
+                toon_count - 1
+            };
+
         let mut child_hp = hp.clone();
         let child_orgs = orgs - gag.is_org as u8;
         let mut child_used = used.clone();
         use_gag(&mut child_hp, is_lured, &mut child_used, gag);
 
         if let Some((child_cost, _)) = opt(
-            cache, gags, is_lured, child_n, child_hp, child_orgs, child_used,
+            cache,
+            gags,
+            is_lured,
+            child_toon_count,
+            child_hp,
+            child_orgs,
+            child_used,
         ) {
             let new_min_cost = child_cost + gag.cost;
             if new_min_cost < min_cost {

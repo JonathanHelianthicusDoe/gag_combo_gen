@@ -129,6 +129,20 @@ impl GagHistory {
         GagHistory(SIMPLE_PASS, SIMPLE_PASS, SIMPLE_PASS, SIMPLE_PASS)
     }
 
+    pub fn len(&self) -> u8 {
+        if self.0 == SIMPLE_PASS {
+            0
+        } else if self.1 == SIMPLE_PASS {
+            1
+        } else if self.2 == SIMPLE_PASS {
+            2
+        } else if self.3 == SIMPLE_PASS {
+            3
+        } else {
+            4
+        }
+    }
+
     pub fn add_gag(&mut self, gag: &Gag) {
         let simple = gag.simple();
         if self.0 > simple {
