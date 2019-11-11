@@ -1,6 +1,4 @@
-use crate::gag_types::{Gag, GagType, SimpleGag};
-use fxhash::FxHashMap as Map;
-use lazy_static::lazy_static;
+use crate::gag_types::{Gag, GagType, GagType::*, SimpleGag};
 
 pub const PASS: Gag = Gag {
     name:     "pass",
@@ -15,6 +13,501 @@ pub const SIMPLE_PASS: SimpleGag = SimpleGag {
     dmg:      0,
 };
 
+pub static DEFAULT_GAGS: &[Gag] = &[
+    PASS,
+    Gag {
+        name:     "banana_peel",
+        gag_type: TrapGag,
+        is_org:   false,
+        base_dmg: 12,
+        cost:     10,
+    },
+    Gag {
+        name:     "bikehorn",
+        gag_type: SoundGag,
+        is_org:   false,
+        base_dmg: 4,
+        cost:     12,
+    },
+    Gag {
+        name:     "flowerpot",
+        gag_type: DropGag,
+        is_org:   false,
+        base_dmg: 10,
+        cost:     14,
+    },
+    Gag {
+        name:     "squirting_flower",
+        gag_type: SquirtGag,
+        is_org:   false,
+        base_dmg: 4,
+        cost:     15,
+    },
+    Gag {
+        name:     "cupcake",
+        gag_type: ThrowGag,
+        is_org:   false,
+        base_dmg: 6,
+        cost:     16,
+    },
+    Gag {
+        name:     "banana_peel",
+        gag_type: TrapGag,
+        is_org:   true,
+        base_dmg: 13,
+        cost:     15,
+    },
+    Gag {
+        name:     "bikehorn",
+        gag_type: SoundGag,
+        is_org:   true,
+        base_dmg: 4,
+        cost:     17,
+    },
+    Gag {
+        name:     "flowerpot",
+        gag_type: DropGag,
+        is_org:   true,
+        base_dmg: 11,
+        cost:     19,
+    },
+    Gag {
+        name:     "squirting_flower",
+        gag_type: SquirtGag,
+        is_org:   true,
+        base_dmg: 4,
+        cost:     20,
+    },
+    Gag {
+        name:     "cupcake",
+        gag_type: ThrowGag,
+        is_org:   true,
+        base_dmg: 6,
+        cost:     21,
+    },
+    Gag {
+        name:     "rake",
+        gag_type: TrapGag,
+        is_org:   false,
+        base_dmg: 20,
+        cost:     100,
+    },
+    Gag {
+        name:     "whistle",
+        gag_type: SoundGag,
+        is_org:   false,
+        base_dmg: 7,
+        cost:     110,
+    },
+    Gag {
+        name:     "sandbag",
+        gag_type: DropGag,
+        is_org:   false,
+        base_dmg: 18,
+        cost:     120,
+    },
+    Gag {
+        name:     "glass_of_water",
+        gag_type: SquirtGag,
+        is_org:   false,
+        base_dmg: 8,
+        cost:     140,
+    },
+    Gag {
+        name:     "fruit_pie_slice",
+        gag_type: ThrowGag,
+        is_org:   false,
+        base_dmg: 10,
+        cost:     160,
+    },
+    Gag {
+        name:     "rake",
+        gag_type: TrapGag,
+        is_org:   true,
+        base_dmg: 22,
+        cost:     150,
+    },
+    Gag {
+        name:     "whistle",
+        gag_type: SoundGag,
+        is_org:   true,
+        base_dmg: 7,
+        cost:     160,
+    },
+    Gag {
+        name:     "sandbag",
+        gag_type: DropGag,
+        is_org:   true,
+        base_dmg: 19,
+        cost:     170,
+    },
+    Gag {
+        name:     "glass_of_water",
+        gag_type: SquirtGag,
+        is_org:   true,
+        base_dmg: 8,
+        cost:     190,
+    },
+    Gag {
+        name:     "fruit_pie_slice",
+        gag_type: ThrowGag,
+        is_org:   true,
+        base_dmg: 11,
+        cost:     210,
+    },
+    Gag {
+        name:     "marbles",
+        gag_type: TrapGag,
+        is_org:   false,
+        base_dmg: 35,
+        cost:     1_000,
+    },
+    Gag {
+        name:     "bugle",
+        gag_type: SoundGag,
+        is_org:   false,
+        base_dmg: 11,
+        cost:     1_100,
+    },
+    Gag {
+        name:     "anvil",
+        gag_type: DropGag,
+        is_org:   false,
+        base_dmg: 30,
+        cost:     1_200,
+    },
+    Gag {
+        name:     "squirtgun",
+        gag_type: SquirtGag,
+        is_org:   false,
+        base_dmg: 12,
+        cost:     1_400,
+    },
+    Gag {
+        name:     "cream_pie_slice",
+        gag_type: ThrowGag,
+        is_org:   false,
+        base_dmg: 17,
+        cost:     1_600,
+    },
+    Gag {
+        name:     "marbles",
+        gag_type: TrapGag,
+        is_org:   true,
+        base_dmg: 38,
+        cost:     1_500,
+    },
+    Gag {
+        name:     "bugle",
+        gag_type: SoundGag,
+        is_org:   true,
+        base_dmg: 12,
+        cost:     1_600,
+    },
+    Gag {
+        name:     "anvil",
+        gag_type: DropGag,
+        is_org:   true,
+        base_dmg: 33,
+        cost:     1_700,
+    },
+    Gag {
+        name:     "squirtgun",
+        gag_type: SquirtGag,
+        is_org:   true,
+        base_dmg: 13,
+        cost:     1_900,
+    },
+    Gag {
+        name:     "cream_pie_slice",
+        gag_type: ThrowGag,
+        is_org:   true,
+        base_dmg: 18,
+        cost:     2_100,
+    },
+    Gag {
+        name:     "aoogah",
+        gag_type: SoundGag,
+        is_org:   false,
+        base_dmg: 16,
+        cost:     4_000,
+    },
+    Gag {
+        name:     "quicksand",
+        gag_type: TrapGag,
+        is_org:   false,
+        base_dmg: 50,
+        cost:     4_500,
+    },
+    Gag {
+        name:     "big_weight",
+        gag_type: DropGag,
+        is_org:   false,
+        base_dmg: 45,
+        cost:     6_000,
+    },
+    Gag {
+        name:     "seltzer_bottle",
+        gag_type: SquirtGag,
+        is_org:   false,
+        base_dmg: 21,
+        cost:     7_000,
+    },
+    Gag {
+        name:     "fruit_pie",
+        gag_type: ThrowGag,
+        is_org:   false,
+        base_dmg: 27,
+        cost:     8_000,
+    },
+    Gag {
+        name:     "aoogah",
+        gag_type: SoundGag,
+        is_org:   true,
+        base_dmg: 17,
+        cost:     6_000,
+    },
+    Gag {
+        name:     "quicksand",
+        gag_type: TrapGag,
+        is_org:   true,
+        base_dmg: 55,
+        cost:     6_500,
+    },
+    Gag {
+        name:     "big_weight",
+        gag_type: DropGag,
+        is_org:   true,
+        base_dmg: 49,
+        cost:     8_000,
+    },
+    Gag {
+        name:     "seltzer_bottle",
+        gag_type: SquirtGag,
+        is_org:   true,
+        base_dmg: 23,
+        cost:     9_000,
+    },
+    Gag {
+        name:     "fruit_pie",
+        gag_type: ThrowGag,
+        is_org:   true,
+        base_dmg: 29,
+        cost:     10_000,
+    },
+    Gag {
+        name:     "elephant_trunk",
+        gag_type: SoundGag,
+        is_org:   false,
+        base_dmg: 21,
+        cost:     12_000,
+    },
+    Gag {
+        name:     "trap_door",
+        gag_type: TrapGag,
+        is_org:   false,
+        base_dmg: 70,
+        cost:     18_000,
+    },
+    Gag {
+        name:     "safe",
+        gag_type: DropGag,
+        is_org:   false,
+        base_dmg: 60,
+        cost:     32_000,
+    },
+    Gag {
+        name:     "fire_hose",
+        gag_type: SquirtGag,
+        is_org:   false,
+        base_dmg: 30,
+        cost:     48_000,
+    },
+    Gag {
+        name:     "cream_pie",
+        gag_type: ThrowGag,
+        is_org:   false,
+        base_dmg: 40,
+        cost:     50_000,
+    },
+    Gag {
+        name:     "elephant_trunk",
+        gag_type: SoundGag,
+        is_org:   true,
+        base_dmg: 23,
+        cost:     16_000,
+    },
+    Gag {
+        name:     "trap_door",
+        gag_type: TrapGag,
+        is_org:   true,
+        base_dmg: 77,
+        cost:     24_000,
+    },
+    Gag {
+        name:     "safe",
+        gag_type: DropGag,
+        is_org:   true,
+        base_dmg: 66,
+        cost:     36_000,
+    },
+    Gag {
+        name:     "fire_hose",
+        gag_type: SquirtGag,
+        is_org:   true,
+        base_dmg: 33,
+        cost:     56_000,
+    },
+    Gag {
+        name:     "cream_pie",
+        gag_type: ThrowGag,
+        is_org:   true,
+        base_dmg: 44,
+        cost:     60_000,
+    },
+    Gag {
+        name:     "storm_cloud",
+        gag_type: SquirtGag,
+        is_org:   false,
+        base_dmg: 80,
+        cost:     400_000,
+    },
+    Gag {
+        name:     "cake",
+        gag_type: ThrowGag,
+        is_org:   false,
+        base_dmg: 100,
+        cost:     600_000,
+    },
+    Gag {
+        name:     "grand_piano",
+        gag_type: DropGag,
+        is_org:   false,
+        base_dmg: 170,
+        cost:     740_000,
+    },
+    Gag {
+        name:     "tnt",
+        gag_type: TrapGag,
+        is_org:   false,
+        base_dmg: 180,
+        cost:     766_000,
+    },
+    Gag {
+        name:     "foghorn",
+        gag_type: SoundGag,
+        is_org:   false,
+        base_dmg: 50,
+        cost:     820_000,
+    },
+    Gag {
+        name:     "storm_cloud",
+        gag_type: SquirtGag,
+        is_org:   true,
+        base_dmg: 88,
+        cost:     470_000,
+    },
+    Gag {
+        name:     "cake",
+        gag_type: ThrowGag,
+        is_org:   true,
+        base_dmg: 110,
+        cost:     700_000,
+    },
+    Gag {
+        name:     "grand_piano",
+        gag_type: DropGag,
+        is_org:   true,
+        base_dmg: 187,
+        cost:     780_000,
+    },
+    Gag {
+        name:     "tnt",
+        gag_type: TrapGag,
+        is_org:   true,
+        base_dmg: 198,
+        cost:     790_000,
+    },
+    Gag {
+        name:     "foghorn",
+        gag_type: SoundGag,
+        is_org:   true,
+        base_dmg: 55,
+        cost:     920_000,
+    },
+    Gag {
+        name:     "geyser",
+        gag_type: SquirtGag,
+        is_org:   false,
+        base_dmg: 105,
+        cost:     4_000_000,
+    },
+    Gag {
+        name:     "opera_singer",
+        gag_type: SoundGag,
+        is_org:   false,
+        base_dmg: 90,
+        cost:     6_000_000,
+    },
+    Gag {
+        name:     "wedding_cake",
+        gag_type: ThrowGag,
+        is_org:   false,
+        base_dmg: 120,
+        cost:     6_010_000,
+    },
+    Gag {
+        name:     "toontanic",
+        gag_type: DropGag,
+        is_org:   false,
+        base_dmg: 180,
+        cost:     7_000_000,
+    },
+    Gag {
+        name:     "railroad",
+        gag_type: TrapGag,
+        is_org:   false,
+        base_dmg: 195,
+        cost:     7_010_000,
+    },
+    Gag {
+        name:     "geyser",
+        gag_type: SquirtGag,
+        is_org:   true,
+        base_dmg: 115,
+        cost:     4_500_000,
+    },
+    Gag {
+        name:     "opera_singer",
+        gag_type: SoundGag,
+        is_org:   true,
+        base_dmg: 99,
+        cost:     6_500_000,
+    },
+    Gag {
+        name:     "wedding_cake",
+        gag_type: ThrowGag,
+        is_org:   true,
+        base_dmg: 132,
+        cost:     6_510_000,
+    },
+    Gag {
+        name:     "toontanic",
+        gag_type: DropGag,
+        is_org:   true,
+        base_dmg: 198,
+        cost:     7_010_000,
+    },
+    Gag {
+        name:     "railroad",
+        gag_type: TrapGag,
+        is_org:   true,
+        base_dmg: 214,
+        cost:     7_777_777,
+    },
+];
+
+/*
 pub const TRAP_GAGS: [Gag; 7] = [
     Gag {
         name:     "banana_peel",
@@ -191,35 +684,35 @@ pub const SQUIRT_GAGS: [Gag; 7] = [
         gag_type: GagType::SquirtGag,
         is_org:   false,
         base_dmg: 12,
-        cost:     0,
+        cost:     1_400,
     },
     Gag {
         name:     "seltzer_bottle",
         gag_type: GagType::SquirtGag,
         is_org:   false,
         base_dmg: 21,
-        cost:     0,
+        cost:     7_000,
     },
     Gag {
         name:     "fire_hose",
         gag_type: GagType::SquirtGag,
         is_org:   false,
         base_dmg: 30,
-        cost:     0,
+        cost:     48_000,
     },
     Gag {
         name:     "storm_cloud",
         gag_type: GagType::SquirtGag,
         is_org:   false,
         base_dmg: 80,
-        cost:     0,
+        cost:     400_000,
     },
     Gag {
         name:     "geyser",
         gag_type: GagType::SquirtGag,
         is_org:   false,
         base_dmg: 105,
-        cost:     0,
+        cost:     4_000_000,
     },
 ];
 
@@ -229,104 +722,101 @@ pub const DROP_GAGS: [Gag; 7] = [
         gag_type: GagType::DropGag,
         is_org:   false,
         base_dmg: 10,
-        cost:     0,
+        cost:     14,
     },
     Gag {
         name:     "sandbag",
         gag_type: GagType::DropGag,
         is_org:   false,
         base_dmg: 18,
-        cost:     0,
+        cost:     120,
     },
     Gag {
         name:     "anvil",
         gag_type: GagType::DropGag,
         is_org:   false,
         base_dmg: 30,
-        cost:     0,
+        cost:     1_200,
     },
     Gag {
         name:     "big_weight",
         gag_type: GagType::DropGag,
         is_org:   false,
         base_dmg: 45,
-        cost:     0,
+        cost:     6_000,
     },
     Gag {
         name:     "safe",
         gag_type: GagType::DropGag,
         is_org:   false,
         base_dmg: 60,
-        cost:     0,
+        cost:     32_000,
     },
     Gag {
         name:     "grand_piano",
         gag_type: GagType::DropGag,
         is_org:   false,
         base_dmg: 170,
-        cost:     0,
+        cost:     740_000,
     },
     Gag {
         name:     "toontanic",
         gag_type: GagType::DropGag,
         is_org:   false,
         base_dmg: 180,
-        cost:     0,
+        cost:     7_000_000,
     },
 ];
-
-lazy_static! {
-    pub static ref GAG_HASHES: Map<&'static str, u32> = {
-        let mut m = Map::default();
-
-        m.insert("pass", 0);
-
-        m.insert("banana_peel", 1);
-        m.insert("rake", 6);
-        m.insert("marbles", 11);
-        m.insert("quicksand", 16);
-        m.insert("trap_door", 21);
-        m.insert("tnt", 26);
-        m.insert("railroad", 31);
-
-        m.insert("bikehorn", 2);
-        m.insert("whistle", 7);
-        m.insert("bugle", 12);
-        m.insert("aoogah", 17);
-        m.insert("elephant_trunk", 22);
-        m.insert("foghorn", 27);
-        m.insert("opera_singer", 32);
-
-        m.insert("cupcake", 3);
-        m.insert("fruit_pie_slice", 8);
-        m.insert("cream_pie_slice", 13);
-        m.insert("fruit_pie", 18);
-        m.insert("cream_pie", 23);
-        m.insert("cake", 28);
-        m.insert("wedding_cake", 33);
-
-        m.insert("squirting_flower", 4);
-        m.insert("glass_of_water", 9);
-        m.insert("squirtgun", 14);
-        m.insert("seltzer_bottle", 19);
-        m.insert("fire_hose", 24);
-        m.insert("storm_cloud", 29);
-        m.insert("geyser", 34);
-
-        m.insert("flowerpot", 5);
-        m.insert("sandbag", 10);
-        m.insert("anvil", 15);
-        m.insert("big_weight", 20);
-        m.insert("safe", 25);
-        m.insert("grand_piano", 30);
-        m.insert("toontanic", 35);
-
-        m
-    };
-}
+*/
 
 pub fn hash_gag(gag: &Gag) -> u32 {
-    GAG_HASHES[gag.name] + if gag.is_org { 35 } else { 0 }
+    let base_hash = match gag.name {
+        "pass" => 0,
+
+        "banana_peel" => 1,
+        "rake" => 6,
+        "marbles" => 11,
+        "quicksand" => 16,
+        "trap_door" => 21,
+        "tnt" => 26,
+        "railroad" => 31,
+
+        "bikehorn" => 2,
+        "whistle" => 7,
+        "bugle" => 12,
+        "aoogah" => 17,
+        "elephant_trunk" => 22,
+        "foghorn" => 27,
+        "opera_singer" => 32,
+
+        "cupcake" => 3,
+        "fruit_pie_slice" => 8,
+        "cream_pie_slice" => 13,
+        "fruit_pie" => 18,
+        "cream_pie" => 23,
+        "cake" => 28,
+        "wedding_cake" => 33,
+
+        "squirting_flower" => 4,
+        "glass_of_water" => 9,
+        "squirtgun" => 14,
+        "seltzer_bottle" => 19,
+        "fire_hose" => 24,
+        "storm_cloud" => 29,
+        "geyser" => 34,
+
+        "flowerpot" => 5,
+        "sandbag" => 10,
+        "anvil" => 15,
+        "big_weight" => 20,
+        "safe" => 25,
+        "grand_piano" => 30,
+        "toontanic" => 35,
+
+        _ => panic!("Unknown gag name: {}", gag.name),
+    };
+
+    base_hash + if gag.is_org { 35 } else { 0 }
 }
 
 pub fn hash_picks(picks: &[Gag]) -> u32 {
