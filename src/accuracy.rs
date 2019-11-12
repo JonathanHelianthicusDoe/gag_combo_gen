@@ -42,7 +42,12 @@ pub fn combo_accuracy(
 
         for gag in combo {
             match gag.gag_type {
-                Trap => trapped = !trapped,
+                Trap => {
+                    if trapped || luring == Luring::NoLure {
+                        return 0.0;
+                    }
+                    trapped = true;
+                },
                 Sound => sounds += 1,
                 Throw => throws += 1,
                 Squirt => squirts += 1,
