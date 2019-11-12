@@ -6,12 +6,40 @@ use crate::{
 use fxhash::{FxHashMap as Map, FxHashSet as Set};
 use std::{self, collections::BinaryHeap as Heap};
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum LureGag {
+    BlueMagnet,
+    Hypno,
+    OrgHypno,
+    Presentation,
+    OrgPresentation,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum Luring {
+    NoLure,
+    Luring(LureGag),
+    Lured,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 struct Args {
     toon_count:  u8,
     cog_hp:      Hp,
     org_count:   u8,
     gag_history: GagHistory,
+}
+
+impl LureGag {
+    pub fn prop_acc(self) -> u8 {
+        match self {
+            Self::BlueMagnet => 60,
+            Self::Hypno => 70,
+            Self::OrgHypno => 80,
+            Self::Presentation => 90,
+            Self::OrgPresentation => 100,
+        }
+    }
 }
 
 impl Args {

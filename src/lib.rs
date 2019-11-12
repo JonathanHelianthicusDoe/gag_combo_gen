@@ -2,6 +2,7 @@
 #![deny(clippy::all)]
 #![deny(deprecated)]
 
+pub mod accuracy;
 pub mod gag_types;
 pub mod gags;
 mod hp;
