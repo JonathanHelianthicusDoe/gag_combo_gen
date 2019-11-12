@@ -13,7 +13,7 @@ mod tests {
         gag_types::{
             Gag,
             GagName,
-            GagType::{DropGag, SquirtGag, ThrowGag},
+            GagType::{Drop, Squirt, Throw},
         },
         gags::{DEFAULT_GAGS, PASS},
         opt::opt_combo,
@@ -25,7 +25,7 @@ mod tests {
             opt_combo(
                 DEFAULT_GAGS
                     .iter()
-                    .filter(|g| g.gag_type == ThrowGag)
+                    .filter(|g| g.gag_type == Throw)
                     .cloned()
                     .collect::<Vec<_>>()
                     .as_slice(),
@@ -37,7 +37,7 @@ mod tests {
             ),
             Some(vec![Gag {
                 name:     GagName::FruitPieSlice,
-                gag_type: ThrowGag,
+                gag_type: Throw,
                 is_org:   false,
                 base_dmg: 10,
                 cost:     160,
@@ -52,14 +52,14 @@ mod tests {
             Some(vec![
                 Gag {
                     name:     GagName::Squirtgun,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   false,
                     base_dmg: 12,
                     cost:     1_400,
                 },
                 Gag {
                     name:     GagName::StormCloud,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   false,
                     base_dmg: 80,
                     cost:     400_000,
@@ -68,7 +68,7 @@ mod tests {
         );
         let squirt_gags: Vec<_> = DEFAULT_GAGS
             .iter()
-            .filter(|g| g.gag_type == SquirtGag)
+            .filter(|g| g.gag_type == Squirt)
             .cloned()
             .collect();
         assert_eq!(
@@ -76,21 +76,21 @@ mod tests {
             Some(vec![
                 Gag {
                     name:     GagName::FireHose,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   false,
                     base_dmg: 30,
                     cost:     48_000,
                 },
                 Gag {
                     name:     GagName::FireHose,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   false,
                     base_dmg: 30,
                     cost:     48_000,
                 },
                 Gag {
                     name:     GagName::FireHose,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   true,
                     base_dmg: 33,
                     cost:     56_000,
@@ -102,28 +102,28 @@ mod tests {
             Some(vec![
                 Gag {
                     name:     GagName::SeltzerBottle,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   true,
                     base_dmg: 23,
                     cost:     9_000,
                 },
                 Gag {
                     name:     GagName::SeltzerBottle,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   true,
                     base_dmg: 23,
                     cost:     9_000,
                 },
                 Gag {
                     name:     GagName::SeltzerBottle,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   true,
                     base_dmg: 23,
                     cost:     9_000,
                 },
                 Gag {
                     name:     GagName::SeltzerBottle,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   true,
                     base_dmg: 23,
                     cost:     9_000,
@@ -135,21 +135,21 @@ mod tests {
             Some(vec![
                 Gag {
                     name:     GagName::SquirtingFlower,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   false,
                     base_dmg: 4,
                     cost:     15,
                 },
                 Gag {
                     name:     GagName::SquirtingFlower,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   false,
                     base_dmg: 4,
                     cost:     15,
                 },
                 Gag {
                     name:     GagName::SquirtingFlower,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   false,
                     base_dmg: 4,
                     cost:     15,
@@ -162,21 +162,21 @@ mod tests {
             Some(vec![
                 Gag {
                     name:     GagName::BigWeight,
-                    gag_type: DropGag,
+                    gag_type: Drop,
                     is_org:   false,
                     base_dmg: 45,
                     cost:     6_000,
                 },
                 Gag {
                     name:     GagName::StormCloud,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   false,
                     base_dmg: 80,
                     cost:     400_000,
                 },
                 Gag {
                     name:     GagName::StormCloud,
-                    gag_type: SquirtGag,
+                    gag_type: Squirt,
                     is_org:   false,
                     base_dmg: 80,
                     cost:     400_000,
@@ -189,21 +189,21 @@ mod tests {
             Some(vec![
                 Gag {
                     name:     GagName::Anvil,
-                    gag_type: DropGag,
+                    gag_type: Drop,
                     is_org:   false,
                     base_dmg: 30,
                     cost:     1_200,
                 },
                 Gag {
                     name:     GagName::GrandPiano,
-                    gag_type: DropGag,
+                    gag_type: Drop,
                     is_org:   false,
                     base_dmg: 170,
                     cost:     740_000,
                 },
                 Gag {
                     name:     GagName::GrandPiano,
-                    gag_type: DropGag,
+                    gag_type: Drop,
                     is_org:   false,
                     base_dmg: 170,
                     cost:     740_000,

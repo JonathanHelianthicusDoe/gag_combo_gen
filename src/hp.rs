@@ -53,11 +53,11 @@ impl Hp {
         let (mut multi_drop, mut drop_dmg) = (false, 0);
         let gags = [&used.0, &used.1, &used.2, &used.3, &SIMPLE_PASS];
         for g in gags.iter() {
-            if g.gag_type != GagType::SoundGag && multi_sound {
+            if g.gag_type != GagType::Sound && multi_sound {
                 self.do_dmg((sound_dmg - 1) / 5 + 1);
                 multi_sound = false;
             }
-            if g.gag_type != GagType::ThrowGag {
+            if g.gag_type != GagType::Throw {
                 if multi_throw {
                     self.do_dmg((throw_dmg - 1) / 5 + 1);
                     multi_throw = false;
@@ -67,7 +67,7 @@ impl Hp {
                     is_lured = false;
                 }
             }
-            if g.gag_type != GagType::SquirtGag {
+            if g.gag_type != GagType::Squirt {
                 if multi_squirt {
                     self.do_dmg((squirt_dmg - 1) / 5 + 1);
                     multi_squirt = false;
@@ -79,7 +79,7 @@ impl Hp {
             }
 
             match g.gag_type {
-                GagType::TrapGag =>
+                GagType::Trap =>
                     if is_lured {
                         if trapped {
                             self.fst_shell = self.fst_max;
@@ -90,7 +90,7 @@ impl Hp {
                             is_lured = false;
                         }
                     },
-                GagType::SoundGag => {
+                GagType::Sound => {
                     if sound_dmg > 0 {
                         multi_sound = true;
                     }
@@ -98,21 +98,21 @@ impl Hp {
                     sound_dmg += g.dmg;
                     is_lured = false;
                 },
-                GagType::ThrowGag => {
+                GagType::Throw => {
                     if throw_dmg > 0 {
                         multi_throw = true;
                     }
                     self.do_dmg(g.dmg);
                     throw_dmg += g.dmg;
                 },
-                GagType::SquirtGag => {
+                GagType::Squirt => {
                     if squirt_dmg > 0 {
                         multi_squirt = true;
                     }
                     self.do_dmg(g.dmg);
                     squirt_dmg += g.dmg;
                 },
-                GagType::DropGag =>
+                GagType::Drop =>
                     if !is_lured {
                         if drop_dmg > 0 {
                             multi_drop = true;

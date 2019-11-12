@@ -4,12 +4,12 @@ use std::{cmp::Ordering, mem};
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[repr(u8)]
 pub enum GagType {
-    TrapGag = 0,
-    SoundGag = 1,
-    ThrowGag = 2,
-    SquirtGag = 3,
-    DropGag = 4,
-    PassGag = 5,
+    Trap = 0,
+    Sound = 1,
+    Throw = 2,
+    Squirt = 3,
+    Drop = 4,
+    Pass = 5,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -88,12 +88,12 @@ pub struct Combo {
 }
 
 pub const GAG_TYPES: [GagType; 6] = [
-    GagType::TrapGag,
-    GagType::SoundGag,
-    GagType::ThrowGag,
-    GagType::SquirtGag,
-    GagType::DropGag,
-    GagType::PassGag,
+    GagType::Trap,
+    GagType::Sound,
+    GagType::Throw,
+    GagType::Squirt,
+    GagType::Drop,
+    GagType::Pass,
 ];
 
 impl PartialOrd for GagType {

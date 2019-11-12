@@ -1,5 +1,5 @@
 use crate::{
-    gag_types::{Combo, Gag, GagHistory, GagType::TrapGag},
+    gag_types::{Combo, Gag, GagHistory, GagType::Trap},
     gags::{hash_picks, PASS},
     hp::Hp,
 };
@@ -76,7 +76,7 @@ fn k_opt(
         // This logic is to prevent 4-gag combos that include trap, since we
         // only care about 1-round combos, and someone has to do the lure!
         let child_toon_count =
-            if gag.gag_type == TrapGag && toon_count + used.len() == 4 {
+            if gag.gag_type == Trap && toon_count + used.len() == 4 {
                 if toon_count >= 2 {
                     toon_count - 2
                 } else {
@@ -201,7 +201,7 @@ fn opt(
         // This logic is to prevent 4-gag combos that include trap, since we
         // only care about 1-round combos, and someone has to do the lure!
         let child_toon_count =
-            if gag.gag_type == TrapGag && toon_count + used.len() == 4 {
+            if gag.gag_type == Trap && toon_count + used.len() == 4 {
                 if toon_count >= 2 {
                     toon_count - 2
                 } else {
