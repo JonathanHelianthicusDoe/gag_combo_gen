@@ -1,6 +1,6 @@
 [package]
 name = "gag_combo_gen"
-version = "0.1.6"
+version = "0.2.0"
 authors = ["Dr. Jonathan Helianthicus Doe, IV <augiii@protonmail.com>"]
 edition = "2018"
 description = """

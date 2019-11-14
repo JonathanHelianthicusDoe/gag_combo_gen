@@ -17,7 +17,7 @@ mod tests {
             GagType::{Drop, Squirt, Throw},
         },
         gags::{DEFAULT_GAGS, PASS},
-        opt::opt_combo,
+        opt::{opt_combo, Luring},
     };
 
     #[test]
@@ -31,7 +31,7 @@ mod tests {
                     .collect::<Vec<_>>()
                     .as_slice(),
                 2,
-                true,
+                Luring::Lured,
                 false,
                 1,
                 0,
@@ -49,7 +49,7 @@ mod tests {
     #[test]
     fn main_test() {
         assert_eq!(
-            opt_combo(DEFAULT_GAGS, 11, true, false, 2, 1),
+            opt_combo(DEFAULT_GAGS, 11, Luring::Lured, false, 2, 1),
             Some(vec![
                 Gag {
                     name:     GagName::Squirtgun,
@@ -73,7 +73,7 @@ mod tests {
             .cloned()
             .collect();
         assert_eq!(
-            opt_combo(&squirt_gags, 11, true, false, 3, 1),
+            opt_combo(&squirt_gags, 11, Luring::Lured, false, 3, 1),
             Some(vec![
                 Gag {
                     name:     GagName::FireHose,
@@ -99,7 +99,7 @@ mod tests {
             ]),
         );
         assert_eq!(
-            opt_combo(&squirt_gags, 11, true, false, 4, 4),
+            opt_combo(&squirt_gags, 11, Luring::Lured, false, 4, 4),
             Some(vec![
                 Gag {
                     name:     GagName::SeltzerBottle,
@@ -132,7 +132,7 @@ mod tests {
             ]),
         );
         assert_eq!(
-            opt_combo(&squirt_gags, 3, true, false, 4, 4),
+            opt_combo(&squirt_gags, 3, Luring::Lured, false, 4, 4),
             Some(vec![
                 Gag {
                     name:     GagName::SquirtingFlower,
@@ -159,7 +159,7 @@ mod tests {
             ]),
         );
         assert_eq!(
-            opt_combo(DEFAULT_GAGS, 11, true, true, 3, 2),
+            opt_combo(DEFAULT_GAGS, 11, Luring::Lured, true, 3, 2),
             Some(vec![
                 Gag {
                     name:     GagName::BigWeight,
@@ -186,7 +186,7 @@ mod tests {
         );
 
         assert_eq!(
-            opt_combo(DEFAULT_GAGS, 12, false, true, 3, 3),
+            opt_combo(DEFAULT_GAGS, 12, Luring::NoLure, true, 3, 3),
             Some(vec![
                 Gag {
                     name:     GagName::Anvil,

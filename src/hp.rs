@@ -1,6 +1,7 @@
 use crate::{
     gag_types::{GagHistory, GagType},
     gags::SIMPLE_PASS,
+    opt::Luring,
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
@@ -41,11 +42,11 @@ impl Hp {
         }
     }
 
-    pub fn apply_all_gags(&mut self, is_lured: bool, used: &GagHistory) {
+    pub fn apply_all_gags(&mut self, luring: Luring, used: &GagHistory) {
         self.fst_shell = self.fst_max;
         self.snd_shell = self.snd_max;
 
-        let mut is_lured = is_lured;
+        let mut is_lured = luring != Luring::NoLure;
         let mut trapped = false;
         let (mut multi_sound, mut sound_dmg) = (false, 0);
         let (mut multi_throw, mut throw_dmg) = (false, 0);
@@ -80,10 +81,12 @@ impl Hp {
 
             match g.gag_type {
                 GagType::Trap =>
-                    if is_lured {
+                // Trap only works if we are luring, not if the cog is
+                // already lured!
+                    if let Luring::Luring(_) = luring {
                         if trapped {
                             self.fst_shell = self.fst_max;
-                            is_lured = is_lured;
+                            is_lured = true;
                         } else {
                             self.fst_shell -= g.dmg;
                             trapped = true;

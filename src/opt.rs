@@ -1,5 +1,5 @@
 use crate::{
-    gag_types::{Combo, Gag, GagHistory, GagType::Trap},
+    gag_types::{Combo, Gag, GagHistory},
     gags::{hash_picks, PASS},
     hp::Hp,
 };
@@ -58,9 +58,9 @@ impl Args {
     }
 }
 
-fn use_gag(hp: &mut Hp, is_lured: bool, used: &mut GagHistory, gag: &Gag) {
+fn use_gag(hp: &mut Hp, luring: Luring, used: &mut GagHistory, gag: &Gag) {
     used.add_gag(gag);
-    hp.apply_all_gags(is_lured, used);
+    hp.apply_all_gags(luring, used);
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -68,7 +68,7 @@ fn k_opt(
     // Constant
     cache: &mut Map<Args, Vec<Combo>>,
     gags: &[Gag],
-    is_lured: bool,
+    luring: Luring,
     k: u8,
     // Non-constant
     toon_count: u8,
@@ -101,23 +101,11 @@ fn k_opt(
             continue;
         }
 
-        // This logic is to prevent 4-gag combos that include trap, since we
-        // only care about 1-round combos, and someone has to do the lure!
-        let child_toon_count =
-            if gag.gag_type == Trap && toon_count + used.len() == 4 {
-                if toon_count >= 2 {
-                    toon_count - 2
-                } else {
-                    continue;
-                }
-            } else {
-                toon_count - 1
-            };
-
+        let child_toon_count = toon_count - 1;
         let mut child_hp = hp.clone();
         let child_orgs = orgs - gag.is_org as u8;
         let mut child_used = used.clone();
-        use_gag(&mut child_hp, is_lured, &mut child_used, gag);
+        use_gag(&mut child_hp, luring, &mut child_used, gag);
 
         for Combo {
             cost: child_cost,
@@ -125,7 +113,7 @@ fn k_opt(
         } in k_opt(
             cache,
             gags,
-            is_lured,
+            luring,
             k,
             child_toon_count,
             child_hp,
@@ -171,17 +159,27 @@ pub fn k_opt_combos(
     k: u8,
     gags: &[Gag],
     cog_level: u8,
-    is_lured: bool,
+    luring: Luring,
     is_v2: bool,
     toon_count: u8,
     org_count: u8,
 ) -> Vec<Vec<Gag>> {
+    // This logic is here because if the user specifies that we are currently
+    // luring, then (at least) one toon has to do said luring, which means that
+    // the lure gag being part of the combo is implicit and we find combos that
+    // have `n - 1` gags.
+    let toon_count = if let Luring::Luring(_) = luring {
+        toon_count - 1
+    } else {
+        toon_count
+    };
+
     let mut cache = Map::default();
 
     k_opt(
         &mut cache,
         gags,
-        is_lured,
+        luring,
         k,
         toon_count,
         Hp::new(cog_level, is_v2),
@@ -197,7 +195,7 @@ fn opt(
     // Constant
     cache: &mut Map<Args, Option<(i32, Gag)>>,
     gags: &[Gag],
-    is_lured: bool,
+    luring: Luring,
     // Non-constant
     toon_count: u8,
     hp: Hp,
@@ -226,28 +224,16 @@ fn opt(
             continue;
         }
 
-        // This logic is to prevent 4-gag combos that include trap, since we
-        // only care about 1-round combos, and someone has to do the lure!
-        let child_toon_count =
-            if gag.gag_type == Trap && toon_count + used.len() == 4 {
-                if toon_count >= 2 {
-                    toon_count - 2
-                } else {
-                    continue;
-                }
-            } else {
-                toon_count - 1
-            };
-
+        let child_toon_count = toon_count - 1;
         let mut child_hp = hp.clone();
         let child_orgs = orgs - gag.is_org as u8;
         let mut child_used = used.clone();
-        use_gag(&mut child_hp, is_lured, &mut child_used, gag);
+        use_gag(&mut child_hp, luring, &mut child_used, gag);
 
         if let Some((child_cost, _)) = opt(
             cache,
             gags,
-            is_lured,
+            luring,
             child_toon_count,
             child_hp,
             child_orgs,
@@ -286,18 +272,28 @@ fn opt(
 pub fn opt_combo(
     gags: &[Gag],
     cog_level: u8,
-    is_lured: bool,
+    luring: Luring,
     is_v2: bool,
     toon_count: u8,
     org_count: u8,
 ) -> Option<Vec<Gag>> {
+    // This logic is here because if the user specifies that we are currently
+    // luring, then (at least) one toon has to do said luring, which means that
+    // the lure gag being part of the combo is implicit and we find combos that
+    // have `n - 1` gags.
+    let toon_count = if let Luring::Luring(_) = luring {
+        toon_count - 1
+    } else {
+        toon_count
+    };
+
     let mut cache = Map::default();
     let hp = Hp::new(cog_level, is_v2);
     let mut res = Vec::with_capacity(toon_count as usize);
     if let Some((_, first_gag)) = opt(
         &mut cache,
         gags,
-        is_lured,
+        luring,
         toon_count,
         hp.clone(),
         org_count,
@@ -310,7 +306,7 @@ pub fn opt_combo(
 
             args.toon_count -= 1;
             args.org_count -= gag.is_org as u8;
-            use_gag(&mut args.cog_hp, is_lured, &mut args.gag_history, &gag);
+            use_gag(&mut args.cog_hp, luring, &mut args.gag_history, &gag);
 
             if args.cog_hp.is_dead() {
                 break;
